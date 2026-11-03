@@ -27,7 +27,7 @@ final class PermissionCatalog
         'services' => ['view', 'create', 'edit', 'delete', 'publish', 'export'],
         'products' => ['view', 'create', 'edit', 'delete', 'publish', 'export', 'import'],
         'product_categories' => ['view', 'create', 'edit', 'delete'],
-        'pricing' => ['view', 'edit'],
+        'pricing' => ['view', 'create', 'edit', 'delete'],
         'orders' => ['view', 'edit', 'assign', 'cancel', 'export'],
         'payments' => ['view', 'manage', 'refund', 'export'],
         'quotations' => ['view', 'view_assigned', 'create', 'edit', 'edit_assigned', 'send', 'approve', 'delete', 'export'],

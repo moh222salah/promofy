@@ -3,7 +3,11 @@
 namespace App\Support;
 
 use App\Models\AuditLog;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\ExchangeRate;
 use App\Models\LoginHistory;
+use App\Models\Media;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -21,6 +25,10 @@ final class MorphMap
         'permission' => Permission::class,
         'audit_log' => AuditLog::class,
         'login_history' => LoginHistory::class,
+        'media' => Media::class,
+        'country' => Country::class,
+        'currency' => Currency::class,
+        'exchange_rate' => ExchangeRate::class,
     ];
 
     /** @return array<string, class-string> */

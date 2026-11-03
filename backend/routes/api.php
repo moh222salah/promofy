@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AuditLogController;
+use App\Http\Controllers\Api\Admin\CountryController;
+use App\Http\Controllers\Api\Admin\CurrencyController;
+use App\Http\Controllers\Api\Admin\ExchangeRateController;
 use App\Http\Controllers\Api\Admin\LoginHistoryController;
+use App\Http\Controllers\Api\Admin\MediaController;
+use App\Http\Controllers\Api\Admin\SettingController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -11,6 +16,7 @@ use App\Http\Controllers\Api\Auth\PasswordController;
 use App\Http\Controllers\Api\Auth\ProfileController;
 use App\Http\Controllers\Api\Auth\SessionController;
 use App\Http\Controllers\Api\Auth\TwoFactorController;
+use App\Http\Controllers\Api\Public\PublicSettingsController;
 use App\Support\Crud\CrudRoutes;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +35,12 @@ Route::get('/health', function () {
         'time' => now()->toIso8601String(),
     ]);
 })->name('api.health');
+
+// ---------------------------------------------------------------- Public
+Route::prefix('public')->group(function () {
+    Route::get('settings', [PublicSettingsController::class, 'settings']);
+    Route::get('markets', [PublicSettingsController::class, 'markets']);
+});
 
 // ---------------------------------------------------------------- Authentication
 Route::prefix('auth')->group(function () {
@@ -73,4 +85,16 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     CrudRoutes::register('roles', RoleController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options']]);
     CrudRoutes::register('audit-logs', AuditLogController::class, ['only' => ['index', 'show', 'export']]);
     CrudRoutes::register('login-history', LoginHistoryController::class, ['only' => ['index', 'show']]);
+
+    Route::get('settings', [SettingController::class, 'index']);
+    Route::get('settings/{group}', [SettingController::class, 'show']);
+    Route::put('settings/{group}', [SettingController::class, 'update']);
+    CrudRoutes::register('countries', CountryController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'reorder']]);
+    CrudRoutes::register('currencies', CurrencyController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'reorder']]);
+    CrudRoutes::register('exchange-rates', ExchangeRateController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+
+    Route::post('media/upload', [MediaController::class, 'upload']);
+    Route::post('media/{id}/replace', [MediaController::class, 'replace'])->whereNumber('id');
+    Route::get('media/{id}/usages', [MediaController::class, 'usages'])->whereNumber('id');
+    CrudRoutes::register('media', MediaController::class, ['only' => ['index', 'show', 'update', 'destroy', 'options']]);
 });
