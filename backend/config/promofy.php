@@ -27,6 +27,12 @@ return [
     'locales' => ['ar', 'en'],
     'default_locale' => env('APP_LOCALE', 'ar'),
 
+    'security' => [
+        'max_login_attempts' => (int) env('AUTH_MAX_ATTEMPTS', 5),
+        'lockout_minutes' => (int) env('AUTH_LOCKOUT_MINUTES', 15),
+        'two_factor_challenge_minutes' => 5,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | SPA

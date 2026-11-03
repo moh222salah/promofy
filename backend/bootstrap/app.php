@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureStaff;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Sanctum SPA (cookie) authentication for the first-party React app.
         $middleware->statefulApi();
+        $middleware->throttleApi('api');
+        $middleware->appendToGroup('api', SetLocale::class);
+        $middleware->alias(['staff' => EnsureStaff::class]);
+        $middleware->redirectGuestsTo(fn (Request $request) => rtrim((string) config('promofy.frontend_url'), '/').'/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

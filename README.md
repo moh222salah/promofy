@@ -43,8 +43,8 @@ php artisan test           # automated tests
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Application foundation (Laravel 13, `/api/v1` prefix, Sanctum, JSON error handling, health endpoint, tests) | COMPLETE | `php artisan test` passes (3 tests) |
-| Auth, RBAC, audit log, 2FA, login history | NOT STARTED | next |
+| Application foundation (Laravel 13, `/api/v1` prefix, Sanctum, JSON errors, health endpoint) | COMPLETE | verified by tests |
+| Auth (login, lockout, register, email verification, password reset, TOTP 2FA, sessions, login history), RBAC (11 roles, 28 permission modules, backend Gate enforcement), append-only audit log, generic admin CRUD kit (search, filter, sort, pagination, bulk, CSV export), staff users and roles admin API | COMPLETE | `php artisan test`: 28 tests, 154 assertions |
 | Services, products, store, checkout, orders, payments | NOT STARTED | |
 | CRM, quotations, projects | NOT STARTED | |
 | CMS, homepage builder, media library, navigation | NOT STARTED | |
