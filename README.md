@@ -60,9 +60,3 @@ php artisan test           # automated tests
 * Secrets never live in the repository: copy `.env.example` to `.env` and fill real values on the server.
 
 ---
-
-## ملخص بالعربية
-
-منصة **PROMOFY** تجمع الموقع التعريفي، كتالوج الخدمات، المتجر الرقمي، نظام CRM، عروض الأسعار، إدارة المشاريع، نظام إدارة
-المحتوى ولوحة تحكم إدارية متكاملة، بدعم كامل للعربية (RTL) والإنجليزية (LTR). المستودع يُبنى على مراحل، وجدول الحالة أعلاه يوضّح
-بصدق ما تم إنجازه فعليًا وما لم يبدأ بعد.
