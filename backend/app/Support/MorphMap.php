@@ -19,6 +19,11 @@ use App\Models\Page;
 use App\Models\Testimonial;
 use App\Models\TeamMember;
 use App\Models\ContactMessage;
+use App\Models\ProductCategory;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Role;
 use App\Models\User;
 
@@ -49,6 +54,11 @@ final class MorphMap
         'testimonial' => Testimonial::class,
         'team_member' => TeamMember::class,
         'contact_message' => ContactMessage::class,
+        'product_category' => ProductCategory::class,
+        'product' => Product::class,
+        'product_variant' => ProductVariant::class,
+        'order' => Order::class,
+        'payment' => Payment::class,
     ];
 
     /** @return array<string, class-string> */

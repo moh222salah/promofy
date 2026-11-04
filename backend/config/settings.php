@@ -57,6 +57,15 @@ return [
         ],
     ],
 
+    'payments' => [
+        'permission' => 'payments.manage',
+        'keys' => [
+            'gateway' => ['type' => 'string', 'public' => false, 'default' => 'none'],
+            'gateway_checkout_url' => ['type' => 'url', 'public' => false],
+            'gateway_webhook_secret' => ['type' => 'secret', 'public' => false],
+        ],
+    ],
+
     'marketing' => [
         'permission' => 'marketing.manage',
         'keys' => [

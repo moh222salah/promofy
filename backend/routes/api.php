@@ -13,6 +13,14 @@ use App\Http\Controllers\Api\Admin\ServiceController;
 use App\Http\Controllers\Api\Admin\TeamMemberController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\Public\PublicContentController;
+use App\Http\Controllers\Api\Admin\OrderController;
+use App\Http\Controllers\Api\Admin\PaymentController;
+use App\Http\Controllers\Api\Admin\ProductCategoryController;
+use App\Http\Controllers\Api\Admin\ProductController;
+use App\Http\Controllers\Api\Public\CartController;
+use App\Http\Controllers\Api\Public\CheckoutController;
+use App\Http\Controllers\Api\Public\PaymentWebhookController;
+use App\Http\Controllers\Api\Public\StoreController;
 use App\Http\Controllers\Api\Admin\AuditLogController;
 use App\Http\Controllers\Api\Admin\CountryController;
 use App\Http\Controllers\Api\Admin\CurrencyController;
@@ -70,6 +78,22 @@ Route::prefix('public')->group(function () {
     Route::get('testimonials', [PublicContentController::class, 'testimonials']);
     Route::get('team', [PublicContentController::class, 'team']);
     Route::post('contact', [PublicContentController::class, 'contact'])->middleware('throttle:forms');
+
+    // Store
+    Route::get('store/categories', [StoreController::class, 'categories']);
+    Route::get('store/products', [StoreController::class, 'index']);
+    Route::get('store/products/{slug}', [StoreController::class, 'show']);
+    Route::get('cart', [CartController::class, 'show']);
+    Route::post('cart/items', [CartController::class, 'add'])->middleware('throttle:forms');
+    Route::patch('cart/items/{item}', [CartController::class, 'update'])->whereNumber('item');
+    Route::delete('cart/items/{item}', [CartController::class, 'remove'])->whereNumber('item');
+    Route::delete('cart', [CartController::class, 'clear']);
+    Route::get('checkout/methods', [CheckoutController::class, 'methods']);
+    Route::post('checkout', [CheckoutController::class, 'checkout'])->middleware('throttle:forms');
+    Route::get('orders/{number}', [CheckoutController::class, 'track'])->middleware('throttle:forms');
+    Route::post('orders/{number}/downloads', [CheckoutController::class, 'issueDownloads'])->middleware('throttle:forms');
+    Route::get('downloads/{token}', [CheckoutController::class, 'download'])->middleware('throttle:forms');
+    Route::post('payments/webhook/{gateway}', [PaymentWebhookController::class, 'handle'])->middleware('throttle:120,1');
 });
 
 // ---------------------------------------------------------------- Authentication
@@ -151,4 +175,22 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
 
     Route::get('navigation', [NavigationController::class, 'index']);
     Route::put('navigation/{location}', [NavigationController::class, 'update']);
+
+    // Store
+    CrudRoutes::register('product-categories', ProductCategoryController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'reorder']]);
+    Route::get('products/low-stock', [ProductController::class, 'lowStock']);
+    Route::post('products/{id}/stock', [ProductController::class, 'adjustStock'])->whereNumber('id');
+    Route::get('products/{id}/movements', [ProductController::class, 'movements'])->whereNumber('id');
+    Route::post('products/{id}/files', [ProductController::class, 'uploadFile'])->whereNumber('id');
+    Route::delete('products/{id}/files/{file}', [ProductController::class, 'deleteFile'])->whereNumber(['id', 'file']);
+    CrudRoutes::register('products', ProductController::class, ['except' => ['reorder']]);
+
+    Route::post('orders/{id}/status', [OrderController::class, 'transition'])->whereNumber('id');
+    Route::post('orders/{id}/assign', [OrderController::class, 'assign'])->whereNumber('id');
+    Route::post('orders/{id}/notes', [OrderController::class, 'addNote'])->whereNumber('id');
+    Route::post('orders/{id}/payments', [OrderController::class, 'recordPayment'])->whereNumber('id');
+    Route::get('orders/{id}/invoice', [OrderController::class, 'invoice'])->whereNumber('id');
+    Route::post('payments/{payment}/refund', [OrderController::class, 'refund'])->whereNumber('payment');
+    CrudRoutes::register('orders', OrderController::class, ['only' => ['index', 'show', 'export']]);
+    CrudRoutes::register('payments', PaymentController::class, ['only' => ['index', 'show', 'export']]);
 });
