@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\Public\PaymentWebhookController;
 use App\Http\Controllers\Api\Public\StoreController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\LeadController;
+use App\Http\Controllers\Api\Admin\ProjectController;
 use App\Http\Controllers\Api\Admin\QuotationController;
 use App\Http\Controllers\Api\Admin\TaskController;
 use App\Http\Controllers\Api\Public\PublicQuotationController;
@@ -230,4 +231,15 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     Route::get('quotations/{id}/document', [QuotationController::class, 'document'])->whereNumber('id');
     Route::get('quotations/{id}/link', [QuotationController::class, 'link'])->whereNumber('id');
     CrudRoutes::register('quotations', QuotationController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'export', 'duplicate']]);
+
+    // Projects
+    Route::get('projects/board', [ProjectController::class, 'board']);
+    Route::get('projects/calendar', [ProjectController::class, 'calendar']);
+    Route::post('projects/from-quotation/{quotation}', [ProjectController::class, 'fromQuotation'])->whereNumber('quotation');
+    Route::post('projects/from-lead/{lead}', [ProjectController::class, 'fromLead'])->whereNumber('lead');
+    Route::post('projects/{id}/status', [ProjectController::class, 'status'])->whereNumber('id');
+    Route::get('projects/{id}/timeline', [ProjectController::class, 'timeline'])->whereNumber('id');
+    Route::post('projects/{id}/notes', [ProjectController::class, 'addNote'])->whereNumber('id');
+    Route::get('projects/{id}/tasks', [ProjectController::class, 'tasks'])->whereNumber('id');
+    CrudRoutes::register('projects', ProjectController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'export', 'bulk', 'options']]);
 });

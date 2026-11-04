@@ -12,6 +12,17 @@ class Task extends Model
 {
     use Auditable;
 
+    protected static function booted(): void
+    {
+        $recalc = function (Task $task) {
+            if ($task->taskable_type === 'project' && $task->taskable_id) {
+                app(\App\Services\Crm\ProjectService::class)->recalculate((int) $task->taskable_id);
+            }
+        };
+        static::saved($recalc);
+        static::deleted($recalc);
+    }
+
     protected function casts(): array
     {
         return ['due_at' => 'datetime', 'completed_at' => 'datetime'];
