@@ -24,6 +24,9 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Customer;
+use App\Models\Lead;
+use App\Models\Task;
 use App\Models\Role;
 use App\Models\User;
 
@@ -59,6 +62,9 @@ final class MorphMap
         'product_variant' => ProductVariant::class,
         'order' => Order::class,
         'payment' => Payment::class,
+        'customer' => Customer::class,
+        'lead' => Lead::class,
+        'task' => Task::class,
     ];
 
     /** @return array<string, class-string> */

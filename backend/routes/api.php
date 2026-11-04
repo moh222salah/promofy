@@ -21,6 +21,10 @@ use App\Http\Controllers\Api\Public\CartController;
 use App\Http\Controllers\Api\Public\CheckoutController;
 use App\Http\Controllers\Api\Public\PaymentWebhookController;
 use App\Http\Controllers\Api\Public\StoreController;
+use App\Http\Controllers\Api\Admin\CustomerController;
+use App\Http\Controllers\Api\Admin\LeadController;
+use App\Http\Controllers\Api\Admin\TaskController;
+use App\Http\Controllers\Api\Public\ProjectRequestController;
 use App\Http\Controllers\Api\Admin\AuditLogController;
 use App\Http\Controllers\Api\Admin\CountryController;
 use App\Http\Controllers\Api\Admin\CurrencyController;
@@ -78,6 +82,8 @@ Route::prefix('public')->group(function () {
     Route::get('testimonials', [PublicContentController::class, 'testimonials']);
     Route::get('team', [PublicContentController::class, 'team']);
     Route::post('contact', [PublicContentController::class, 'contact'])->middleware('throttle:forms');
+
+    Route::post('project-requests', [ProjectRequestController::class, 'store'])->middleware('throttle:forms');
 
     // Store
     Route::get('store/categories', [StoreController::class, 'categories']);
@@ -193,4 +199,21 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     Route::post('payments/{payment}/refund', [OrderController::class, 'refund'])->whereNumber('payment');
     CrudRoutes::register('orders', OrderController::class, ['only' => ['index', 'show', 'export']]);
     CrudRoutes::register('payments', PaymentController::class, ['only' => ['index', 'show', 'export']]);
+
+    // CRM
+    Route::get('leads/board', [LeadController::class, 'board']);
+    Route::get('leads/analytics', [LeadController::class, 'analytics']);
+    Route::post('leads/{id}/status', [LeadController::class, 'status'])->whereNumber('id');
+    Route::post('leads/{id}/follow-up', [LeadController::class, 'followUp'])->whereNumber('id');
+    Route::post('leads/{id}/convert', [LeadController::class, 'convert'])->whereNumber('id');
+    Route::get('leads/{id}/activities', [LeadController::class, 'activities'])->whereNumber('id');
+    Route::post('leads/{id}/activities', [LeadController::class, 'addActivity'])->whereNumber('id');
+    Route::get('leads/{id}/attachments', [LeadController::class, 'attachments'])->whereNumber('id');
+    Route::get('leads/{id}/attachments/{file}', [LeadController::class, 'attachment'])->whereNumber(['id', 'file']);
+    CrudRoutes::register('leads', LeadController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'export', 'bulk']]);
+    Route::get('customers/{id}/profile', [CustomerController::class, 'profile'])->whereNumber('id');
+    CrudRoutes::register('customers', CustomerController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'export']]);
+    Route::post('tasks/{id}/complete', [TaskController::class, 'complete'])->whereNumber('id');
+    Route::post('tasks/{id}/reopen', [TaskController::class, 'reopen'])->whereNumber('id');
+    CrudRoutes::register('tasks', TaskController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
 });

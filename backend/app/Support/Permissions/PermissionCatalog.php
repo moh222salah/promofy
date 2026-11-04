@@ -24,6 +24,7 @@ final class PermissionCatalog
         'analytics' => ['view', 'export'],
         'leads' => ['view', 'view_assigned', 'create', 'edit', 'edit_assigned', 'delete', 'assign', 'export'],
         'customers' => ['view', 'create', 'edit', 'delete', 'export'],
+        'tasks' => ['view', 'view_assigned', 'create', 'edit', 'edit_assigned', 'delete'],
         'services' => ['view', 'create', 'edit', 'delete', 'publish', 'export'],
         'products' => ['view', 'create', 'edit', 'delete', 'publish', 'export', 'import'],
         'product_categories' => ['view', 'create', 'edit', 'delete'],
@@ -89,7 +90,7 @@ final class PermissionCatalog
                 'name_en' => 'Sales Manager',
                 'description_en' => 'Manages leads, customers and quotations for the whole sales team.',
                 'permissions' => [
-                    'dashboard.view', 'analytics.view', 'leads.*', 'customers.*', 'quotations.*',
+                    'dashboard.view', 'analytics.view', 'leads.*', 'customers.*', 'tasks.*', 'quotations.*',
                     'orders.view', 'projects.view', 'messages.*', 'services.view', 'products.view', 'media.view',
                 ],
             ],
@@ -99,6 +100,7 @@ final class PermissionCatalog
                 'description_en' => 'Works the leads and quotations assigned to them.',
                 'permissions' => [
                     'dashboard.view', 'leads.view_assigned', 'leads.edit_assigned', 'leads.create',
+                    'tasks.view_assigned', 'tasks.edit_assigned', 'tasks.create',
                     'customers.view', 'quotations.view_assigned', 'quotations.edit_assigned', 'quotations.create',
                     'messages.view', 'services.view', 'products.view',
                 ],
@@ -132,7 +134,7 @@ final class PermissionCatalog
                 'name_en' => 'Project Manager',
                 'description_en' => 'Plans and delivers client projects.',
                 'permissions' => [
-                    'dashboard.view', 'projects.*', 'customers.view', 'orders.view', 'quotations.view',
+                    'dashboard.view', 'projects.*', 'tasks.*', 'customers.view', 'orders.view', 'quotations.view',
                     'media.view', 'media.create',
                 ],
             ],
