@@ -23,7 +23,9 @@ use App\Http\Controllers\Api\Public\PaymentWebhookController;
 use App\Http\Controllers\Api\Public\StoreController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\LeadController;
+use App\Http\Controllers\Api\Admin\QuotationController;
 use App\Http\Controllers\Api\Admin\TaskController;
+use App\Http\Controllers\Api\Public\PublicQuotationController;
 use App\Http\Controllers\Api\Public\ProjectRequestController;
 use App\Http\Controllers\Api\Admin\AuditLogController;
 use App\Http\Controllers\Api\Admin\CountryController;
@@ -83,6 +85,8 @@ Route::prefix('public')->group(function () {
     Route::get('team', [PublicContentController::class, 'team']);
     Route::post('contact', [PublicContentController::class, 'contact'])->middleware('throttle:forms');
 
+    Route::get('quotations/{number}', [PublicQuotationController::class, 'show'])->middleware('throttle:forms');
+    Route::post('quotations/{number}/decision', [PublicQuotationController::class, 'decide'])->middleware('throttle:forms');
     Route::post('project-requests', [ProjectRequestController::class, 'store'])->middleware('throttle:forms');
 
     // Store
@@ -216,4 +220,14 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     Route::post('tasks/{id}/complete', [TaskController::class, 'complete'])->whereNumber('id');
     Route::post('tasks/{id}/reopen', [TaskController::class, 'reopen'])->whereNumber('id');
     CrudRoutes::register('tasks', TaskController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+
+    // Quotations
+    Route::post('quotations/{id}/send', [QuotationController::class, 'send'])->whereNumber('id');
+    Route::post('quotations/{id}/approve', [QuotationController::class, 'approve'])->whereNumber('id');
+    Route::post('quotations/{id}/reject', [QuotationController::class, 'reject'])->whereNumber('id');
+    Route::post('quotations/{id}/cancel', [QuotationController::class, 'cancel'])->whereNumber('id');
+    Route::post('quotations/{id}/convert-to-order', [QuotationController::class, 'convertToOrder'])->whereNumber('id');
+    Route::get('quotations/{id}/document', [QuotationController::class, 'document'])->whereNumber('id');
+    Route::get('quotations/{id}/link', [QuotationController::class, 'link'])->whereNumber('id');
+    CrudRoutes::register('quotations', QuotationController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'export', 'duplicate']]);
 });

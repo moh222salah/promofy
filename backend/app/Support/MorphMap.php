@@ -27,6 +27,7 @@ use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\Lead;
 use App\Models\Task;
+use App\Models\Quotation;
 use App\Models\Role;
 use App\Models\User;
 
@@ -65,6 +66,7 @@ final class MorphMap
         'customer' => Customer::class,
         'lead' => Lead::class,
         'task' => Task::class,
+        'quotation' => Quotation::class,
     ];
 
     /** @return array<string, class-string> */
