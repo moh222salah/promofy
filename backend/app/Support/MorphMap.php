@@ -9,6 +9,16 @@ use App\Models\ExchangeRate;
 use App\Models\LoginHistory;
 use App\Models\Media;
 use App\Models\Permission;
+use App\Models\ServiceCategory;
+use App\Models\Service;
+use App\Models\PortfolioItem;
+use App\Models\CaseStudy;
+use App\Models\ArticleCategory;
+use App\Models\Article;
+use App\Models\Page;
+use App\Models\Testimonial;
+use App\Models\TeamMember;
+use App\Models\ContactMessage;
 use App\Models\Role;
 use App\Models\User;
 
@@ -29,6 +39,16 @@ final class MorphMap
         'country' => Country::class,
         'currency' => Currency::class,
         'exchange_rate' => ExchangeRate::class,
+        'service_category' => ServiceCategory::class,
+        'service' => Service::class,
+        'portfolio_item' => PortfolioItem::class,
+        'case_study' => CaseStudy::class,
+        'article_category' => ArticleCategory::class,
+        'article' => Article::class,
+        'page' => Page::class,
+        'testimonial' => Testimonial::class,
+        'team_member' => TeamMember::class,
+        'contact_message' => ContactMessage::class,
     ];
 
     /** @return array<string, class-string> */

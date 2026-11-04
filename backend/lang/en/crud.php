@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'publish_forbidden' => 'You are not allowed to publish content.',
     'bulk_delete_confirm' => 'Bulk deletion must be explicitly confirmed.',
     'bulk_update_unsupported' => 'Bulk update is not supported for this module.',
     'bulk_update_empty' => 'No valid fields were supplied for the bulk update.',

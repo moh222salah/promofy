@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'publish_forbidden' => 'ليس لديك صلاحية النشر.',
     'bulk_delete_confirm' => 'يجب تأكيد الحذف الجماعي صراحةً.',
     'bulk_update_unsupported' => 'التحديث الجماعي غير مدعوم لهذه الوحدة.',
     'bulk_update_empty' => 'لم يتم إرسال حقول صالحة للتحديث الجماعي.',

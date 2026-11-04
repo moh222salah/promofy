@@ -1,5 +1,18 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\ArticleCategoryController;
+use App\Http\Controllers\Api\Admin\ArticleController;
+use App\Http\Controllers\Api\Admin\CaseStudyController;
+use App\Http\Controllers\Api\Admin\ContactMessageController;
+use App\Http\Controllers\Api\Admin\HomepageController;
+use App\Http\Controllers\Api\Admin\NavigationController;
+use App\Http\Controllers\Api\Admin\PageController;
+use App\Http\Controllers\Api\Admin\PortfolioItemController;
+use App\Http\Controllers\Api\Admin\ServiceCategoryController;
+use App\Http\Controllers\Api\Admin\ServiceController;
+use App\Http\Controllers\Api\Admin\TeamMemberController;
+use App\Http\Controllers\Api\Admin\TestimonialController;
+use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\Admin\AuditLogController;
 use App\Http\Controllers\Api\Admin\CountryController;
 use App\Http\Controllers\Api\Admin\CurrencyController;
@@ -40,6 +53,23 @@ Route::get('/health', function () {
 Route::prefix('public')->group(function () {
     Route::get('settings', [PublicSettingsController::class, 'settings']);
     Route::get('markets', [PublicSettingsController::class, 'markets']);
+
+    Route::get('homepage', [PublicContentController::class, 'homepage']);
+    Route::get('navigation', [PublicContentController::class, 'navigation']);
+    Route::get('service-categories', [PublicContentController::class, 'serviceCategories']);
+    Route::get('services', [PublicContentController::class, 'services']);
+    Route::get('services/{slug}', [PublicContentController::class, 'service']);
+    Route::get('portfolio', [PublicContentController::class, 'portfolio']);
+    Route::get('portfolio/{slug}', [PublicContentController::class, 'portfolioItem']);
+    Route::get('case-studies', [PublicContentController::class, 'caseStudies']);
+    Route::get('case-studies/{slug}', [PublicContentController::class, 'caseStudy']);
+    Route::get('article-categories', [PublicContentController::class, 'articleCategories']);
+    Route::get('articles', [PublicContentController::class, 'articles']);
+    Route::get('articles/{slug}', [PublicContentController::class, 'article']);
+    Route::get('pages/{slug}', [PublicContentController::class, 'page']);
+    Route::get('testimonials', [PublicContentController::class, 'testimonials']);
+    Route::get('team', [PublicContentController::class, 'team']);
+    Route::post('contact', [PublicContentController::class, 'contact'])->middleware('throttle:forms');
 });
 
 // ---------------------------------------------------------------- Authentication
@@ -97,4 +127,28 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     Route::post('media/{id}/replace', [MediaController::class, 'replace'])->whereNumber('id');
     Route::get('media/{id}/usages', [MediaController::class, 'usages'])->whereNumber('id');
     CrudRoutes::register('media', MediaController::class, ['only' => ['index', 'show', 'update', 'destroy', 'options']]);
+
+    // Content management
+    CrudRoutes::register('service-categories', ServiceCategoryController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'reorder']]);
+    CrudRoutes::register('services', ServiceController::class);
+    CrudRoutes::register('portfolio', PortfolioItemController::class, ['except' => ['export']]);
+    CrudRoutes::register('case-studies', CaseStudyController::class, ['except' => ['export']]);
+    CrudRoutes::register('article-categories', ArticleCategoryController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'reorder']]);
+    CrudRoutes::register('articles', ArticleController::class, ['except' => ['export', 'reorder']]);
+    Route::get('pages/{id}/revisions', [PageController::class, 'revisions'])->whereNumber('id');
+    Route::post('pages/{id}/revisions/{revision}/restore', [PageController::class, 'restore'])->whereNumber(['id', 'revision']);
+    CrudRoutes::register('pages', PageController::class, ['except' => ['export', 'reorder']]);
+    CrudRoutes::register('testimonials', TestimonialController::class, ['except' => ['export']]);
+    CrudRoutes::register('team', TeamMemberController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'options', 'reorder', 'duplicate']]);
+    CrudRoutes::register('contact-messages', ContactMessageController::class, ['only' => ['index', 'show', 'update', 'destroy', 'export', 'bulk', 'options']]);
+
+    Route::get('homepage', [HomepageController::class, 'draft']);
+    Route::put('homepage', [HomepageController::class, 'saveDraft']);
+    Route::get('homepage/preview', [HomepageController::class, 'preview']);
+    Route::post('homepage/publish', [HomepageController::class, 'publish']);
+    Route::get('homepage/history', [HomepageController::class, 'history']);
+    Route::post('homepage/history/{id}/restore', [HomepageController::class, 'restore'])->whereNumber('id');
+
+    Route::get('navigation', [NavigationController::class, 'index']);
+    Route::put('navigation/{location}', [NavigationController::class, 'update']);
 });
