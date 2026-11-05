@@ -51,7 +51,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
   const [sort, setSort] = useState(cfg.defaultSort ?? '-id')
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [selected, setSelected] = useState<Set<number>>(new Set())
-  const [editing, setEditing] = useState<{ id: number | null; values: Record<string, any> } | null>(null)
+  const [editing, setEditing] = useState<{ id: number | null; values: Record<string, any>; original?: Record<string, any> } | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [confirm, setConfirm] = useState<null | { kind: 'delete' | 'bulk-delete'; id?: number }>(null)
 
@@ -98,7 +98,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
   const openEdit = async (id: number | null) => {
     setErrors({})
     if (id === null) return setEditing({ id: null, values: { ...(cfg.defaults ?? {}) } })
-    try { const r = await api.get<{ data: Record<string, any> }>(`${base}/${id}`); setEditing({ id, values: r.data }) } catch (e) { toast(messageOf(e, t('crud.loadFail')), 'error') }
+    try { const r = await api.get<{ data: Record<string, any> }>(`${base}/${id}`); setEditing({ id, values: r.data, original: r.data }) } catch (e) { toast(messageOf(e, t('crud.loadFail')), 'error') }
   }
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -107,7 +107,14 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
     for (const f of cfg.fields) if (f.required && (f.showIf?.(editing.values) ?? true) && (editing.values[f.name] === undefined || editing.values[f.name] === null || editing.values[f.name] === '')) missing[f.name] = t('crud.required')
     if (Object.keys(missing).length) return setErrors(missing)
     const values: Record<string, any> = {}
-    for (const f of cfg.fields) if (f.showIf?.(editing.values) ?? true) values[f.name] = editing.values[f.name] ?? (f.type === 'bool' ? false : null)
+    for (const f of cfg.fields) {
+      if (!(f.showIf?.(editing.values) ?? true)) continue
+      const v = editing.values[f.name]
+      if (f.type === 'bool') { values[f.name] = !!v; continue }
+      // never-set optional fields are omitted (the API's "sometimes" rules reject null); a value the user cleared is sent as null
+      if ((v === undefined || v === null || v === '') && (editing.original?.[f.name] ?? null) === null) continue
+      values[f.name] = v === '' ? null : v
+    }
     save.mutate({ id: editing.id, values })
   }
   const exportHref = `/api/v1${base}/export${qs({ search: term || undefined, sort })}`

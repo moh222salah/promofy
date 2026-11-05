@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { LayoutDashboard, Briefcase, Layers, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { applyLocale, type Locale } from '@/i18n'
 import { applyTheme, initialTheme, type Theme } from '@/lib/theme'
@@ -14,6 +14,13 @@ export const ADMIN_NAV: NavItem[] = [
   { to: '/admin', label: 'nav.dashboard', icon: LayoutDashboard, permission: 'dashboard.view' },
   { to: '/admin/services', label: 'nav.services', icon: Briefcase, permission: 'services.view' },
   { to: '/admin/service-categories', label: 'nav.serviceCategories', icon: Layers, permission: 'services.view' },
+  { to: '/admin/products', label: 'nav.products', icon: Package, permission: 'products.view' },
+  { to: '/admin/product-categories', label: 'nav.productCategories', icon: Tags, permission: 'product_categories.view' },
+  { to: '/admin/portfolio', label: 'nav.portfolio', icon: Images, permission: 'portfolio.view' },
+  { to: '/admin/articles', label: 'nav.articles', icon: Newspaper, permission: 'articles.view' },
+  { to: '/admin/article-categories', label: 'nav.articleCategories', icon: FolderTree, permission: 'articles.view' },
+  { to: '/admin/testimonials', label: 'nav.testimonials', icon: Quote, permission: 'testimonials.view' },
+  { to: '/admin/team', label: 'nav.team', icon: Users, permission: 'team.view' },
 ]
 
 export default function AdminLayout() {

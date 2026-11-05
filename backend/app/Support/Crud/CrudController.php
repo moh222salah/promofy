@@ -594,8 +594,14 @@ abstract class CrudController extends Controller
         return $this->respond($this->reload($record));
     }
 
+    /** Business rules a record must satisfy before it can go live; applies to publish, bulk publish and any other status change. */
+    protected function assertPublishable(Model $record): void {}
+
     protected function setStatus(Model $record, string $status): void
     {
+        if ($status === $this->publishedValue) {
+            $this->assertPublishable($record);
+        }
         $record->forceFill([$this->statusColumn => $status]);
         $this->onStatusChange($record, $status);
         $record->save();

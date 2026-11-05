@@ -57,6 +57,13 @@ class CaseStudyController extends ContentController
         ];
     }
 
+    protected function assertPublishable(Model $record): void
+    {
+        if (! empty($record->results) && ! $record->results_verified) {
+            throw ValidationException::withMessages(['results_verified' => ['Results must be marked as verified before a case study with results can be published.']]);
+        }
+    }
+
     /** Results may only be published once an editor has confirmed they come from verified client data. */
     protected function validated(\Illuminate\Http\Request $request, ?Model $record): array
     {

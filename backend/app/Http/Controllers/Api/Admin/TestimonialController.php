@@ -63,6 +63,14 @@ class TestimonialController extends ContentController
         return $data;
     }
 
+    /** The publish / bulk-publish actions must honour the same consent rule as create and update. */
+    protected function assertPublishable(Model $record): void
+    {
+        if (! $record->consent_given || trim($record->quote_en.$record->quote_ar) === '') {
+            throw ValidationException::withMessages(['consent_given' => ['A testimonial needs the author\'s recorded consent and a quote before it can be published.']]);
+        }
+    }
+
     protected function option(Model $record): array
     {
         return ['value' => $record->id, 'label_ar' => $record->author_name, 'label_en' => $record->author_name];

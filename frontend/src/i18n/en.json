@@ -25,7 +25,14 @@
     "theme": "Theme",
     "skip": "Skip to content",
     "services": "Services",
-    "serviceCategories": "Service categories"
+    "serviceCategories": "Service categories",
+    "products": "Products",
+    "productCategories": "Product categories",
+    "portfolio": "Portfolio",
+    "articles": "Blog & Insights",
+    "articleCategories": "Article categories",
+    "testimonials": "Testimonials",
+    "team": "Team"
   },
   "range": {
     "today": "Today",

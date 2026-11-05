@@ -25,7 +25,14 @@
     "theme": "المظهر",
     "skip": "تخطَّ إلى المحتوى",
     "services": "إدارة الخدمات",
-    "serviceCategories": "فئات الخدمات"
+    "serviceCategories": "فئات الخدمات",
+    "products": "المنتجات",
+    "productCategories": "فئات المنتجات",
+    "portfolio": "معرض الأعمال",
+    "articles": "المدونة والرؤى",
+    "articleCategories": "تصنيفات المقالات",
+    "testimonials": "آراء العملاء",
+    "team": "فريق العمل"
   },
   "range": {
     "today": "اليوم",

@@ -133,6 +133,26 @@ class ContentTest extends TestCase
         $this->assertCount(0, $this->getJson('/api/v1/public/testimonials')->json('data'));
     }
 
+    public function test_publish_and_bulk_publish_actions_cannot_bypass_consent_and_verification_rules(): void
+    {
+        $manager = $this->staffWithRole('content-manager');
+        $this->actingAs($manager);
+
+        $t = $this->postJson(self::API.'/testimonials', ['author_name' => 'A', 'quote_en' => 'Great', 'consent_given' => false])->assertCreated()->json('data.id');
+        $this->postJson(self::API."/testimonials/$t/publish")->assertUnprocessable()->assertJsonValidationErrors('consent_given');
+        $this->postJson(self::API.'/testimonials/bulk', ['action' => 'publish', 'ids' => [$t]])->assertUnprocessable();
+        $this->assertSame('draft', Testimonial::findOrFail($t)->status);
+        $this->putJson(self::API."/testimonials/$t", ['consent_given' => true])->assertOk();
+        $this->postJson(self::API."/testimonials/$t/publish")->assertOk();
+        $this->assertSame('published', Testimonial::findOrFail($t)->status);
+
+        $c = $this->postJson(self::API.'/case-studies', ['title_ar' => 'د', 'title_en' => 'S', 'results' => [['label_ar' => 'ن', 'label_en' => 'R', 'value' => '1']], 'results_verified' => false])->assertCreated()->json('data.id');
+        $this->postJson(self::API."/case-studies/$c/publish")->assertUnprocessable()->assertJsonValidationErrors('results_verified');
+        $this->assertSame('draft', CaseStudy::findOrFail($c)->status);
+        $this->putJson(self::API."/case-studies/$c", ['results_verified' => true])->assertOk();
+        $this->postJson(self::API."/case-studies/$c/publish")->assertOk();
+    }
+
     public function test_page_revisions_are_recorded_and_restorable(): void
     {
         $manager = $this->staffWithRole('content-manager');
