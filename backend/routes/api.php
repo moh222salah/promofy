@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Admin\TeamMemberController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\Admin\AnalyticsController;
+use App\Http\Controllers\Api\Public\AccountController;
 use App\Http\Controllers\Api\Public\SeoController;
 use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\OrderController;
@@ -128,6 +129,10 @@ Route::prefix('auth')->group(function () {
         Route::put('password', [PasswordController::class, 'update'])->middleware('throttle:forms');
         Route::post('email/resend', [EmailVerificationController::class, 'resend'])->middleware('throttle:forms');
         Route::get('login-history', [ProfileController::class, 'loginHistory']);
+
+        Route::get('account/orders', [AccountController::class, 'orders']);
+        Route::get('account/orders/{number}', [AccountController::class, 'order']);
+        Route::get('account/quotations', [AccountController::class, 'quotations']);
 
         Route::post('two-factor/enable', [TwoFactorController::class, 'enable']);
         Route::post('two-factor/confirm', [TwoFactorController::class, 'confirm']);
