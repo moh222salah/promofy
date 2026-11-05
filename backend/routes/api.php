@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Admin\ServiceController;
 use App\Http\Controllers\Api\Admin\TeamMemberController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\Public\PublicContentController;
+use App\Http\Controllers\Api\Admin\AnalyticsController;
 use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Http\Controllers\Api\Admin\PaymentController;
@@ -245,6 +246,12 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     CrudRoutes::register('projects', ProjectController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'export', 'bulk', 'options']]);
 
     // Notifications (own inbox)
+    Route::get('analytics/overview', [AnalyticsController::class, 'overview']);
+    Route::get('analytics/charts', [AnalyticsController::class, 'charts']);
+    Route::get('analytics/charts/{name}', [AnalyticsController::class, 'chart']);
+    Route::get('analytics/charts/{name}/export', [AnalyticsController::class, 'export']);
+    Route::get('dashboard/widgets', [AnalyticsController::class, 'widgets']);
+
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount']);
     Route::get('notifications/events', [NotificationController::class, 'events']);
