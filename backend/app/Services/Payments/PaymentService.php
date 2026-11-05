@@ -90,6 +90,7 @@ class PaymentService
             if ($parsed['status'] !== 'succeeded') {
                 $payment->forceFill(['status' => 'failed', 'note' => 'Reported failed by provider'])->save();
                 AuditLogger::record('payment.failed', $payment, [], ['order' => $order->number], [], null);
+                DB::afterCommit(fn () => \App\Services\Notifications\NotificationService::send('payment.failed', ['number' => $order->number]));
 
                 return 'failed';
             }
@@ -105,6 +106,7 @@ class PaymentService
                 $this->orders->applyPaymentState($order, 'paid', null, 'Payment confirmed by provider');
             }
             AuditLogger::record('payment.confirmed', $payment, [], ['order' => $order->number, 'amount' => $payment->amount], [], null);
+            DB::afterCommit(fn () => \App\Services\Notifications\NotificationService::send('payment.confirmed', ['number' => $order->number]));
 
             return 'confirmed';
         });
@@ -134,6 +136,7 @@ class PaymentService
             ])->save();
             $this->orders->applyPaymentState($order, 'paid', $userId, 'Manual payment recorded');
             AuditLogger::record('payment.manual_recorded', $payment, [], ['order' => $order->number, 'amount' => $amount, 'note' => $note]);
+            DB::afterCommit(fn () => \App\Services\Notifications\NotificationService::send('payment.confirmed', ['number' => $order->number]));
 
             return $payment;
         });

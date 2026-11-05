@@ -65,6 +65,8 @@ class OrderService
             $this->log($order, null, $order->status, $userId, 'Order placed ('.$method.')');
             AuditLogger::record('order.placed', $order, [], ['number' => $order->number, 'total' => $order->total, 'method' => $method]);
 
+            DB::afterCommit(fn () => \App\Services\Notifications\NotificationService::send('order.placed', ['number' => $order->number, 'total' => $order->total, 'currency' => $order->currency_code]));
+
             return $order->load('items');
         });
     }

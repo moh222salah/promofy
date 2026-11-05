@@ -22,7 +22,11 @@ class InventoryService
             throw ValidationException::withMessages(['stock' => ["Insufficient stock for {$product->name_en}."]]);
         }
 
+        $before = $target->stock_quantity;
         $target->forceFill(['stock_quantity' => $after])->save();
+        if ($delta < 0 && $product->track_stock && $before > $product->low_stock_threshold && $after <= $product->low_stock_threshold) {
+            DB::afterCommit(fn () => \App\Services\Notifications\NotificationService::send('stock.low', ['name' => $product->name_en, 'quantity' => $after]));
+        }
         InventoryMovement::create([
             'product_id' => $product->id, 'product_variant_id' => $variant?->id, 'change' => $delta, 'quantity_after' => $after,
             'reason' => $reason, 'reference_type' => $refType, 'reference_id' => $refId, 'note' => $note, 'user_id' => $userId,

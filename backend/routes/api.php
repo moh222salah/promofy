@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Admin\ServiceController;
 use App\Http\Controllers\Api\Admin\TeamMemberController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\Public\PublicContentController;
+use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\ProductCategoryController;
@@ -242,4 +243,11 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'staff'])->group(function ()
     Route::post('projects/{id}/notes', [ProjectController::class, 'addNote'])->whereNumber('id');
     Route::get('projects/{id}/tasks', [ProjectController::class, 'tasks'])->whereNumber('id');
     CrudRoutes::register('projects', ProjectController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy', 'export', 'bulk', 'options']]);
+
+    // Notifications (own inbox)
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::get('notifications/events', [NotificationController::class, 'events']);
+    Route::post('notifications/read-all', [NotificationController::class, 'readAll']);
+    Route::post('notifications/{id}/read', [NotificationController::class, 'read']);
 });

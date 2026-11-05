@@ -97,6 +97,9 @@ class QuotationService
             }
             $q->forceFill($attrs)->save();
             AuditLogger::record("quotation.{$to}", $q, [], ['by' => $by, 'note' => $note]);
+            if (in_array($to, ['approved', 'rejected'], true)) {
+                DB::afterCommit(fn () => \App\Services\Notifications\NotificationService::send("quotation.{$to}", ['number' => $q->number]));
+            }
 
             return $q;
         });

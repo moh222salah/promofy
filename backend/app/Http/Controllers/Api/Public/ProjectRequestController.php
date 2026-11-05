@@ -61,6 +61,9 @@ class ProjectRequestController extends Controller
             return $lead;
         });
 
+        \App\Services\Notifications\NotificationService::send('lead.created', ['name' => $lead->name, 'source' => $lead->source]);
+        \App\Services\Notifications\NotificationService::send('quotation.requested', ['name' => $lead->name]);
+
         return response()->json(['data' => ['received' => true, 'reference' => 'LEAD-'.str_pad((string) $lead->id, 6, '0', STR_PAD_LEFT)]], 201);
     }
 }

@@ -104,12 +104,18 @@ class ProjectController extends CrudController
         $data['manager_id'] ??= $request->user()->id;
         $project = parent::persistNew($data, $request);
         $project->forceFill(['created_by' => $request->user()->id, 'progress' => $data['progress'] ?? 0])->save();
+        if ($project->manager_id !== $request->user()->id) {
+            \App\Services\Notifications\NotificationService::send('project.assigned', ['name' => $project->name], [$project->manager_id]);
+        }
 
         return $project;
     }
 
     protected function afterSave(Model $record, array $data, Request $request, bool $created): void
     {
+        if (! $created && $record->wasChanged('manager_id') && $record->manager_id && $record->manager_id !== $request->user()->id) {
+            \App\Services\Notifications\NotificationService::send('project.assigned', ['name' => $record->name], [$record->manager_id]);
+        }
         if (array_key_exists('members', $data)) {
             $record->members()->sync(collect($data['members'])->mapWithKeys(fn ($m) => [$m['user_id'] => ['role' => $m['role'] ?? null]])->all());
         }

@@ -239,6 +239,8 @@ class PublicContentController extends Controller
             'user_agent' => mb_substr((string) $request->userAgent(), 0, 255),
         ])->save();
 
+        \App\Services\Notifications\NotificationService::send('message.received', ['name' => $message->name]);
+
         return response()->json(['data' => ['received' => true, 'reference' => 'MSG-'.str_pad((string) $message->id, 6, '0', STR_PAD_LEFT)]], 201);
     }
 }
