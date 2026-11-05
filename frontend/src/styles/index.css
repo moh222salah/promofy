@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-brand: 16 43 92;        /* Royal Navy #102B5C */
+  --c-brand-2: 22 78 155;     /* Royal Blue #164E9B */
+  --c-bg: 246 248 252;
+  --c-surface: 255 255 255;
+  --c-surface-2: 234 241 252; /* Light Blue #EAF1FC */
+  --c-line: 220 227 239;
+  --c-ink: 8 20 38;           /* Dark #081426 */
+  --c-muted: 102 112 133;     /* Neutral Gray #667085 */
+  --c-danger: 200 40 40;
+  --c-success: 20 140 80;
+  --c-warn: 190 120 10;
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --c-brand: 96 150 235;
+  --c-brand-2: 70 125 215;
+  --c-bg: 8 20 38;
+  --c-surface: 14 30 54;
+  --c-surface-2: 22 42 72;
+  --c-line: 36 58 92;
+  --c-ink: 234 241 252;
+  --c-muted: 150 162 184;
+  --c-danger: 240 100 100;
+  --c-success: 70 200 130;
+  --c-warn: 230 170 60;
+  color-scheme: dark;
+}
+html { font-family: Inter, Manrope, system-ui, sans-serif; }
+html[lang='ar'] { font-family: Alexandria, 'IBM Plex Sans Arabic', system-ui, sans-serif; }
+body { @apply bg-bg text-ink antialiased; margin: 0; }
+:focus-visible { outline: 2px solid rgb(var(--c-brand-2)); outline-offset: 2px; }
