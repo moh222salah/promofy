@@ -41,3 +41,22 @@ describe('Login', () => {
     expect(await screen.findByLabelText(/رمز المصادقة|Authentication code/)).toBeInTheDocument()
   })
 })
+
+describe('Login success', () => {
+  it('unwraps the { data } resource envelope and leaves the login page', async () => {
+    let signedIn = false
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (url.includes('/auth/me')) return signedIn ? new Response(JSON.stringify({ data: { id: 1, name: 'A', email: 'a@b.co', type: 'staff', roles: [], permissions: ['*'] } }), { status: 200 }) : new Response('{}', { status: 401 })
+      if (url.includes('/auth/login')) { signedIn = true; return new Response(JSON.stringify({ data: { id: 1, name: 'A', email: 'a@b.co', type: 'staff', roles: [], permissions: ['*'] } }), { status: 200 }) }
+      return new Response(null, { status: 204 })
+    }))
+    const { Routes, Route } = await import('react-router-dom')
+    render(<QueryClientProvider client={new QueryClient()}><MemoryRouter initialEntries={['/admin/login']}><AuthProvider>
+      <Routes><Route path="/admin/login" element={<Login />} /><Route path="/admin" element={<div>HOME</div>} /></Routes></AuthProvider></MemoryRouter></QueryClientProvider>)
+    const u = userEvent.setup()
+    await u.type(await screen.findByLabelText(/البريد|Email/), 'a@b.co')
+    await u.type(screen.getByLabelText(/كلمة المرور|Password/), 'pw')
+    await u.click(screen.getByRole('button'))
+    expect(await screen.findByText('HOME')).toBeInTheDocument()
+  })
+})

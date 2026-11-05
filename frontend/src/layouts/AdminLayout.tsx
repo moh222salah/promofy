@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { LayoutDashboard, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Layers, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { applyLocale, type Locale } from '@/i18n'
 import { applyTheme, initialTheme, type Theme } from '@/lib/theme'
@@ -12,6 +12,8 @@ export interface NavItem { to: string; label: string; icon: LucideIcon; permissi
 /** Only modules that exist are listed — new admin modules register here as they are built. */
 export const ADMIN_NAV: NavItem[] = [
   { to: '/admin', label: 'nav.dashboard', icon: LayoutDashboard, permission: 'dashboard.view' },
+  { to: '/admin/services', label: 'nav.services', icon: Briefcase, permission: 'services.view' },
+  { to: '/admin/service-categories', label: 'nav.serviceCategories', icon: Layers, permission: 'services.view' },
 ]
 
 export default function AdminLayout() {

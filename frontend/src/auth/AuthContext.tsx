@@ -32,17 +32,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setUnauthenticatedHandler(() => { setUser(null); qc.clear() })
-    api.get<User>('/auth/me').then(setUser).catch(() => setUser(null)).finally(() => setLoading(false))
+    api.get<{ data: User }>('/auth/me').then((r) => setUser(r.data)).catch(() => setUser(null)).finally(() => setLoading(false))
   }, [qc])
 
   const login = useCallback(async (email: string, password: string): Promise<LoginResult> => {
     await ensureCsrf(true)
-    const res = await api.post<any>('/auth/login', { email, password })
-    if (res?.two_factor_required) return { status: 'two_factor' }
-    setUser(res); return { status: 'ok' }
+    // Laravel API resources wrap the user in { data }; a 2FA-required login returns { two_factor_required }
+    const res = await api.post<{ data?: User; two_factor_required?: boolean }>('/auth/login', { email, password })
+    if (res?.two_factor_required || !res?.data) return { status: 'two_factor' }
+    setUser(res.data); return { status: 'ok' }
   }, [])
   const twoFactor = useCallback(async (code?: string, recovery?: string) => {
-    setUser(await api.post<User>('/auth/two-factor-challenge', code ? { code } : { recovery_code: recovery }))
+    setUser((await api.post<{ data: User }>('/auth/two-factor-challenge', code ? { code } : { recovery_code: recovery })).data)
   }, [])
   const logout = useCallback(async () => {
     try { await api.post('/auth/logout') } catch (e) { if (!(e instanceof ApiError)) throw e }
