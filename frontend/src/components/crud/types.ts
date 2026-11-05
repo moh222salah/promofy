@@ -47,6 +47,10 @@ export interface ResourceConfig {
   bulk?: Array<'publish' | 'unpublish' | 'archive' | 'delete'>
   /** adds up/down controls that persist order through POST /reorder */
   reorder?: boolean
+  /** list + detail only: no create/edit/delete from the table (records change through domain actions) */
+  readOnly?: boolean
+  /** the first column links to `${detailPath}/${id}` */
+  detailPath?: string
   /** permission module/actions overrides */
   perms?: { create?: string; edit?: string; delete?: string; publish?: string; export?: string }
 }

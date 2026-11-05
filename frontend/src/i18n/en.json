@@ -32,7 +32,10 @@
     "articles": "Blog & Insights",
     "articleCategories": "Article categories",
     "testimonials": "Testimonials",
-    "team": "Team"
+    "team": "Team",
+    "orders": "Orders",
+    "payments": "Payments & transactions",
+    "customers": "Customers"
   },
   "range": {
     "today": "Today",
@@ -137,5 +140,36 @@
     "draft": "Draft",
     "published": "Published",
     "archived": "Archived"
+  },
+  "order": {
+    "invoice": "Invoice",
+    "items": "Items",
+    "item": "Item",
+    "qty": "Qty",
+    "unit": "Unit price",
+    "line": "Line total",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "tax": "Tax",
+    "total": "Total",
+    "payments": "Payments",
+    "refunded": "Refunded",
+    "refund": "Refund",
+    "manualAmount": "Manual payment amount",
+    "manualNote": "Note (required, audited)",
+    "recordPayment": "Record payment",
+    "history": "Status history",
+    "system": "System",
+    "customer": "Customer",
+    "manage": "Manage order",
+    "finalState": "This order is in a final state.",
+    "assignee": "Responsible staff",
+    "notes": "Internal notes",
+    "addNote": "Add",
+    "cancelTitle": "Cancel this order?",
+    "cancelMsg": "Stock is released and the customer is notified. A paid order must be refunded instead.",
+    "cancelConfirm": "Cancel order",
+    "refundAmount": "Refund amount",
+    "refundReason": "Reason (audited)"
   }
 }

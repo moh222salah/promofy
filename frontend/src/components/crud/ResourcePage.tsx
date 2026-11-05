@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { ArrowDown, ArrowUp, Copy, Download, Pencil, Plus, Trash2, X, Eye, EyeOff, Archive } from 'lucide-react'
@@ -42,7 +43,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
   const toast = useToast()
   const qc = useQueryClient()
   const base = `/admin/${cfg.path}`
-  const perm = (a: string) => can(`${cfg.module}.${a}`)
+  const perm = (a: string) => can(`${cfg.module}.${a}`) && !(cfg.readOnly && ['create', 'edit', 'delete'].includes(a))
   const key = ['resource', cfg.path]
 
   const [page, setPage] = useState(1)
@@ -165,7 +166,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
                 {rows.map((r, idx) => (
                   <tr key={r.id} className="border-b border-line last:border-0 hover:bg-surface-2/50">
                     {bulkActions.length > 0 && <td className="p-2"><input type="checkbox" aria-label={`select ${r.id}`} checked={selected.has(r.id)} onChange={() => { const n = new Set(selected); n.has(r.id) ? n.delete(r.id) : n.add(r.id); setSelected(n) }} /></td>}
-                    {cfg.columns.map((c) => <td key={c.key} className="p-2">{c.render ? c.render(r, lang) : c.badge ? <StatusBadge value={r[c.key]} /> : (typeof r[c.key] === 'boolean' ? (r[c.key] ? t('crud.yes') : t('crud.no')) : (r[c.key] ?? t('crud.none')))}</td>)}
+                    {cfg.columns.map((c, ci) => <td key={c.key} className="p-2">{ci === 0 && cfg.detailPath ? <Link className="font-medium text-brand-2 hover:underline" to={`${cfg.detailPath}/${r.id}`}>{c.render ? c.render(r, lang) : r[c.key]}</Link> : c.render ? c.render(r, lang) : c.badge ? <StatusBadge value={r[c.key]} /> : (typeof r[c.key] === 'boolean' ? (r[c.key] ? t('crud.yes') : t('crud.no')) : (r[c.key] ?? t('crud.none')))}</td>)}
                     <td className="p-2"><div className="flex justify-end gap-1">
                       {cfg.reorder && perm('edit') && <>
                         <button className="rounded p-1.5 hover:bg-surface-2" aria-label={t('crud.reorder')} disabled={idx === 0 || move.isPending} onClick={() => moveRow(idx, -1)}><ArrowUp size={15} /></button>

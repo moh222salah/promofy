@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, ShoppingCart, CreditCard, UserRound, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { applyLocale, type Locale } from '@/i18n'
 import { applyTheme, initialTheme, type Theme } from '@/lib/theme'
@@ -14,6 +14,9 @@ export const ADMIN_NAV: NavItem[] = [
   { to: '/admin', label: 'nav.dashboard', icon: LayoutDashboard, permission: 'dashboard.view' },
   { to: '/admin/services', label: 'nav.services', icon: Briefcase, permission: 'services.view' },
   { to: '/admin/service-categories', label: 'nav.serviceCategories', icon: Layers, permission: 'services.view' },
+  { to: '/admin/orders', label: 'nav.orders', icon: ShoppingCart, permission: 'orders.view' },
+  { to: '/admin/payments', label: 'nav.payments', icon: CreditCard, permission: 'payments.view' },
+  { to: '/admin/customers', label: 'nav.customers', icon: UserRound, permission: 'customers.view' },
   { to: '/admin/products', label: 'nav.products', icon: Package, permission: 'products.view' },
   { to: '/admin/product-categories', label: 'nav.productCategories', icon: Tags, permission: 'product_categories.view' },
   { to: '/admin/portfolio', label: 'nav.portfolio', icon: Images, permission: 'portfolio.view' },

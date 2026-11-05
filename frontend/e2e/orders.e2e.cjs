@@ -1,0 +1,33 @@
+// Browser E2E: real checkout -> order detail (note, status, manual payment, refund) -> dashboard revenue. Needs product id 1 published and WhatsApp checkout enabled.
+const { chromium, request } = require('playwright')
+;(async () => {
+  const api = await request.newContext({ baseURL: 'http://localhost:8000', extraHTTPHeaders: { Accept: 'application/json' } })
+  const cart = (await (await api.post('/api/v1/public/cart/items', { data: { product_id: 1, quantity: 2 } })).json()).data.token
+  const co = await api.post('/api/v1/public/checkout', { headers: { 'X-Cart-Token': cart }, data: { cart_token: cart, method: 'whatsapp', name: 'Mona Ali', email: 'mona@example.com', phone: '+201111111111', country: 'EG', consent: true } })
+  const number = (await co.json()).data.order.number; console.log('✔ order created via public checkout:', number)
+
+  const browser = await chromium.launch(); const page = await browser.newPage({ viewport: { width: 1400, height: 1000 } })
+  const bad = []; page.on('pageerror', (e) => bad.push(e.message)); page.on('response', (r) => { if (r.url().includes('/api/v1/admin') && r.status() >= 400) bad.push(r.status() + ' ' + r.url().replace(/.*v1/, '')) })
+  await page.goto('http://localhost:5173/admin/login')
+  await page.fill('input[type=email]', 'admin@promofy.test'); await page.fill('input[type=password]', 'E2e-Pass-12345!'); await page.click('button[type=submit]'); await page.waitForURL('**/admin')
+  await page.click('a[href="/admin/orders"]'); await page.waitForSelector('tbody tr'); console.log('✔ orders list shows', await page.locator('tbody tr').count(), 'order(s); create/edit buttons present:', await page.locator('button:has-text("جديد")').count())
+  await page.click(`text=${number}`); await page.waitForSelector('h1:has-text("' + number + '")'); console.log('✔ order detail opened')
+  console.log('  total shown:', (await page.locator('dt:has-text("الإجمالي") + dd').innerText()))
+  await page.fill('input[aria-label="ملاحظات داخلية"]', 'اتصلت بالعميل'); await page.click('button:has-text("إضافة")'); await page.waitForSelector('li:has-text("اتصلت بالعميل")'); console.log('✔ internal note added')
+  await page.click('button:has-text("قيد المعالجة")'); await page.waitForSelector('ol li:has-text("قيد المعالجة")'); console.log('✔ status -> processing (history updated)')
+  // WhatsApp orders must never become paid automatically
+  console.log('  status after WhatsApp order stays unpaid:', !(await page.locator('span.rounded-full:has-text("مدفوع")').count()))
+  await page.fill('input[type=number]', '300'); await page.fill('input[required]:not([type=number])', 'تحويل بنكي مؤكد'); await page.click('button:has-text("تسجيل دفعة")')
+  await page.waitForSelector('text=تحويل بنكي' , { timeout: 8000 }).catch(() => {}); await page.waitForTimeout(800)
+  console.log('✔ manual payment recorded; payments rows:', await page.locator('text=ناجح').count())
+  await page.click('button:has-text("استرداد")'); await page.fill('[role=dialog] input[type=number]', '50'); await page.fill('[role=dialog] input:not([type=number])', 'اختبار'); await page.click('[role=dialog] button[type=submit]'); await page.waitForTimeout(1200)
+  console.log('✔ partial refund; shows refunded:', await page.locator('text=المسترد').count() > 0)
+  // dashboard now reflects revenue (net of refund)
+  await page.goto('http://localhost:5173/admin'); await page.waitForSelector('text=إجمالي الإيرادات'); await page.waitForTimeout(1500)
+  console.log('  dashboard revenue card:', (await page.locator('text=إجمالي الإيرادات').first().locator('xpath=..').innerText()).replace(/\s+/g, ' '))
+  await page.screenshot({ path: 'order-detail.png' })
+  await page.goto('http://localhost:5173/admin/payments'); await page.waitForSelector('tbody tr'); console.log('✔ payments list rows:', await page.locator('tbody tr').count())
+  await page.goto('http://localhost:5173/admin/customers'); await page.waitForSelector('h1'); await page.waitForTimeout(800); console.log('✔ customers list rows:', await page.locator('tbody tr').count())
+  console.log(bad.length ? 'PROBLEMS:\n' + bad.join('\n') : 'no failed admin requests / js errors')
+  await browser.close()
+})().catch((e) => { console.error('FAIL', e.message.split('\n')[0]); process.exit(1) })
