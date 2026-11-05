@@ -35,7 +35,8 @@
     "team": "Team",
     "orders": "Orders",
     "payments": "Payments & transactions",
-    "customers": "Customers"
+    "customers": "Customers",
+    "leads": "Leads & CRM"
   },
   "range": {
     "today": "Today",
@@ -171,5 +172,50 @@
     "cancelConfirm": "Cancel order",
     "refundAmount": "Refund amount",
     "refundReason": "Reason (audited)"
+  },
+  "crm": {
+    "board": "Board",
+    "table": "Table",
+    "followUp": "Follow-up",
+    "moveTo": "Move to",
+    "lostTitle": "Mark lead as lost",
+    "lostReason": "Reason for losing",
+    "details": "Lead details",
+    "timeline": "Activity timeline",
+    "type": "Type",
+    "activityBody": "Log a call, email, meeting or note…",
+    "pipeline": "Pipeline",
+    "followNote": "Note (optional)",
+    "schedule": "Schedule follow-up",
+    "followHint": "Also creates a task for the assignee.",
+    "actions": "Actions",
+    "convert": "Convert to customer",
+    "converted": "Lead converted to a customer",
+    "createQuote": "Create quotation",
+    "isCustomer": "Customer",
+    "attribution": "Source attribution",
+    "f": {
+      "company": "Company",
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "industry": "Industry",
+      "source": "Source",
+      "priority": "Priority",
+      "budget": "Budget",
+      "timeline": "Timeline",
+      "nextFollowUp": "Next follow-up",
+      "description": "Description"
+    },
+    "types": {
+      "note": "Note",
+      "call": "Call",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "meeting": "Meeting",
+      "system": "System",
+      "followup": "Follow-up",
+      "status": "Status change"
+    }
   }
 }

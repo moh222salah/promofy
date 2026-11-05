@@ -5,6 +5,8 @@ import { Spinner } from '@/components/ui'
 import ResourcePage from '@/components/crud/ResourcePage'
 import { serviceCategories, services } from '@/pages/admin/modules'
 import * as commerce from '@/pages/admin/modules-commerce'
+import LeadsPage from '@/pages/admin/LeadsPage'
+import LeadDetail from '@/pages/admin/LeadDetail'
 import OrderDetail from '@/pages/admin/OrderDetail'
 import * as content from '@/pages/admin/modules-content'
 
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="articles" element={<ResourcePage cfg={content.articles} />} />
           <Route path="article-categories" element={<ResourcePage cfg={content.articleCategories} />} />
           <Route path="testimonials" element={<ResourcePage cfg={content.testimonials} />} />
+          <Route path="leads" element={<LeadsPage />} />
+          <Route path="leads/:id" element={<LeadDetail />} />
           <Route path="orders" element={<ResourcePage cfg={commerce.orders} />} />
           <Route path="orders/:id" element={<OrderDetail />} />
           <Route path="payments" element={<ResourcePage cfg={commerce.payments} />} />

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, ShoppingCart, CreditCard, UserRound, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, Contact, ShoppingCart, CreditCard, UserRound, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { applyLocale, type Locale } from '@/i18n'
 import { applyTheme, initialTheme, type Theme } from '@/lib/theme'
@@ -14,6 +14,7 @@ export const ADMIN_NAV: NavItem[] = [
   { to: '/admin', label: 'nav.dashboard', icon: LayoutDashboard, permission: 'dashboard.view' },
   { to: '/admin/services', label: 'nav.services', icon: Briefcase, permission: 'services.view' },
   { to: '/admin/service-categories', label: 'nav.serviceCategories', icon: Layers, permission: 'services.view' },
+  { to: '/admin/leads', label: 'nav.leads', icon: Contact, permission: 'leads.view|leads.view_assigned' },
   { to: '/admin/orders', label: 'nav.orders', icon: ShoppingCart, permission: 'orders.view' },
   { to: '/admin/payments', label: 'nav.payments', icon: CreditCard, permission: 'payments.view' },
   { to: '/admin/customers', label: 'nav.customers', icon: UserRound, permission: 'customers.view' },
@@ -37,7 +38,7 @@ export default function AdminLayout() {
   if (!user) return <Navigate to="/admin/login" replace />
   if (user.type !== 'staff') return <Navigate to="/admin/login" replace state={{ notStaff: true }} />
 
-  const items = ADMIN_NAV.filter((i) => can(i.permission))
+  const items = ADMIN_NAV.filter((i) => i.permission.split('|').some(can))
   const other: Locale = i18n.language === 'ar' ? 'en' : 'ar'
   const Collapse = collapsed ? PanelLeftOpen : PanelLeftClose
 

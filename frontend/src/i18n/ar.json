@@ -35,7 +35,8 @@
     "team": "فريق العمل",
     "orders": "إدارة الطلبات",
     "payments": "المدفوعات والمعاملات",
-    "customers": "العملاء"
+    "customers": "العملاء",
+    "leads": "العملاء المحتملون"
   },
   "range": {
     "today": "اليوم",
@@ -171,5 +172,50 @@
     "cancelConfirm": "إلغاء الطلب",
     "refundAmount": "مبلغ الاسترداد",
     "refundReason": "السبب (مسجّل)"
+  },
+  "crm": {
+    "board": "لوحة",
+    "table": "جدول",
+    "followUp": "المتابعة",
+    "moveTo": "نقل إلى",
+    "lostTitle": "تحديد العميل كخاسر",
+    "lostReason": "سبب الخسارة",
+    "details": "تفاصيل العميل المحتمل",
+    "timeline": "سجل النشاط",
+    "type": "النوع",
+    "activityBody": "سجّل مكالمة أو بريدًا أو اجتماعًا أو ملاحظة…",
+    "pipeline": "مراحل المبيعات",
+    "followNote": "ملاحظة (اختياري)",
+    "schedule": "جدولة متابعة",
+    "followHint": "تُنشئ أيضًا مهمة للمسؤول.",
+    "actions": "إجراءات",
+    "convert": "تحويل إلى عميل",
+    "converted": "تم تحويل العميل المحتمل إلى عميل",
+    "createQuote": "إنشاء عرض سعر",
+    "isCustomer": "عميل",
+    "attribution": "مصدر الوصول",
+    "f": {
+      "company": "الشركة",
+      "email": "البريد",
+      "phone": "الهاتف",
+      "country": "الدولة",
+      "industry": "المجال",
+      "source": "المصدر",
+      "priority": "الأولوية",
+      "budget": "الميزانية",
+      "timeline": "الإطار الزمني",
+      "nextFollowUp": "المتابعة القادمة",
+      "description": "الوصف"
+    },
+    "types": {
+      "note": "ملاحظة",
+      "call": "مكالمة",
+      "email": "بريد",
+      "whatsapp": "واتساب",
+      "meeting": "اجتماع",
+      "system": "النظام",
+      "followup": "متابعة",
+      "status": "تغيير الحالة"
+    }
   }
 }
