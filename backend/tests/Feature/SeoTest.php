@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Service;
+use App\Services\Seo\SeoService;
 use App\Services\Settings\SettingsService;
 use Database\Seeders\ContentSeeder;
 use Database\Seeders\MarketsSeeder;
@@ -50,6 +51,31 @@ class SeoTest extends TestCase
         $this->assertStringContainsString("Disallow: /\n", $this->get('/robots.txt')->getContent());
         $svc = Service::published()->firstOrFail();
         $this->getJson('/api/v1/public/seo?type=service&slug='.$svc->slug_en)->assertOk()->assertJsonPath('data.robots', 'noindex,nofollow');
+    }
+
+    public function test_every_content_type_resolves_and_sitemap_points_to_the_public_site(): void
+    {
+        $this->assertStringContainsString('Sitemap: https://promofy.test/sitemap.xml', $this->get('/robots.txt')->getContent());
+        foreach (SeoService::TYPES as $type => [$model, $segment]) {
+            $rec = $model::query()->published()->first();
+            if (! $rec) {
+                continue;                                  // nothing seeded for this type
+            }
+            $d = $this->getJson("/api/v1/public/seo?type=$type&locale=ar&slug=".$rec->slug_ar)->assertOk()->json('data');
+            $path = '/ar/'.($segment ? "$segment/" : '').$rec->slug_ar;
+            $this->assertSame('https://promofy.test'.$path, $d['canonical'], $type);
+            $this->assertNotEmpty($d['title'], $type);
+            $this->assertNotEmpty($d['json_ld'], $type);
+        }
+        // a Product and an Article exercise their specific JSON-LD branches
+        $product = \App\Models\Product::query()->forceCreate(['type' => 'digital_download', 'sku' => 'SEO1', 'slug_ar' => 'tmp-ar', 'slug_en' => 'tmp-en', 'name_ar' => 'منتج', 'name_en' => 'Prod', 'price' => 100, 'currency_code' => 'EGP', 'status' => 'published', 'published_at' => now()->subDay()]);
+        $ld = collect($this->getJson('/api/v1/public/seo?type=product&locale=en&slug=tmp-en')->assertOk()->json('data.json_ld'))->firstWhere('@type', 'Product');
+        $this->assertSame('EGP', $ld['offers']['priceCurrency']);
+        $this->assertSame('https://schema.org/InStock', $ld['offers']['availability']);
+        $this->assertSame('https://promofy.test/en/store/tmp-en', $ld['url']);
+        $product->forceFill(['seo_noindex' => true])->save();
+        $this->assertSame('noindex,nofollow', $this->getJson('/api/v1/public/seo?type=product&slug=tmp-en')->json('data.robots'));
+        $this->assertStringNotContainsString('tmp-en', $this->get('/sitemap.xml')->getContent());
     }
 
     public function test_meta_endpoint_returns_canonical_alternates_and_json_ld(): void

@@ -184,7 +184,8 @@ class SeoService
             }
         }
         $lines[] = '';
-        $lines[] = 'Sitemap: '.rtrim((string) config('app.url'), '/').'/sitemap.xml';
+        // a sitemap must live on the same host as the URLs it lists, i.e. the public site (proxied to this app)
+        $lines[] = 'Sitemap: '.$this->base().'/sitemap.xml';
 
         return implode("\n", $lines)."\n";
     }
