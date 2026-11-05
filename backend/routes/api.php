@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Admin\TeamMemberController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\Admin\AnalyticsController;
+use App\Http\Controllers\Api\Public\SeoController;
 use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Http\Controllers\Api\Admin\PaymentController;
@@ -71,6 +72,7 @@ Route::prefix('public')->group(function () {
     Route::get('settings', [PublicSettingsController::class, 'settings']);
     Route::get('markets', [PublicSettingsController::class, 'markets']);
 
+    Route::get('seo', [SeoController::class, 'show']);
     Route::get('homepage', [PublicContentController::class, 'homepage']);
     Route::get('navigation', [PublicContentController::class, 'navigation']);
     Route::get('service-categories', [PublicContentController::class, 'serviceCategories']);
