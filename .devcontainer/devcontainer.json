@@ -1,0 +1,15 @@
+{
+  "name": "PROMOFY",
+  "image": "mcr.microsoft.com/devcontainers/php:8.3",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" }
+  },
+  "postCreateCommand": "bash scripts/dev.sh setup",
+  "postStartCommand": "bash scripts/dev.sh start",
+  "forwardPorts": [5173, 8000],
+  "portsAttributes": {
+    "5173": { "label": "Admin / Web (Vite)", "onAutoForward": "openBrowser" },
+    "8000": { "label": "Laravel API", "onAutoForward": "notify" }
+  },
+  "hostRequirements": { "cpus": 2 }
+}

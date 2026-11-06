@@ -26,6 +26,16 @@ frontend/   React SPA: public website + admin dashboard   (planned)
 docs/       Architecture, API, integrations, deployment, backup, admin guide   (planned)
 ```
 
+## Quick start (one command)
+
+```bash
+bash scripts/dev.sh        # setup (deps, .env, migrate+seed, admin) + start API :8000 and admin :5173
+bash scripts/dev.sh status # health
+bash scripts/dev.sh stop
+```
+
+In GitHub Codespaces the `.devcontainer` does this automatically; open the forwarded port 5173 at `/admin`. Default admin: `admin@promofy.test` / `Promofy-Admin-2026!` (change it).
+
 ## Run the backend locally
 
 ```bash

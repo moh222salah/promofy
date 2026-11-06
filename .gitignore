@@ -25,3 +25,4 @@ coverage/
 composer-sandbox.json
 composer-sandbox.lock
 frontend/*.png
+.run/

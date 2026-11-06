@@ -8,6 +8,8 @@ export default defineConfig({
   resolve: { alias: { '@': path.resolve(__dirname, 'src') } },
   server: {
     port: 5173,
+    host: true,
+    allowedHosts: true, // Codespaces / tunnels forward under a different hostname (dev server only)
     // same-origin in dev so the Sanctum session cookie works without CORS
     proxy: {
       '/api': { target: process.env.VITE_BACKEND_URL ?? 'http://localhost:8000', changeOrigin: false },
