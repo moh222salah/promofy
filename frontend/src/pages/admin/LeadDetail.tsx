@@ -10,7 +10,7 @@ import { useToast } from '@/components/Toast'
 import { fmtDate } from '@/i18n'
 import { LEAD_STATUSES, PRIORITIES, SOURCES, label } from './modules-crm'
 
-const input = 'rounded-lg border border-line bg-bg p-2 text-sm'
+const input = 'field p-2 text-sm'
 const TYPES = ['note', 'call', 'email', 'whatsapp', 'meeting'] as const
 const msg = (e: unknown, fb: string) => (e instanceof ApiError ? (Object.values(e.errors)[0]?.[0] ?? e.message) : fb)
 

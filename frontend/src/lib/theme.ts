@@ -4,7 +4,7 @@ export function initialTheme(): Theme {
     const s = localStorage.getItem('theme')
     if (s === 'light' || s === 'dark') return s
   } catch { /* ignore */ }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return 'dark'
 }
 export function applyTheme(t: Theme) {
   document.documentElement.dataset.theme = t

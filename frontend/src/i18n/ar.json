@@ -36,7 +36,18 @@
     "orders": "إدارة الطلبات",
     "payments": "المدفوعات والمعاملات",
     "customers": "العملاء",
-    "leads": "العملاء المحتملون"
+    "leads": "العملاء المحتملون",
+    "menu": "القائمة",
+    "search": "ابحث أو انتقل إلى…",
+    "notifications": "الإشعارات",
+    "markAll": "تحديد الكل كمقروء",
+    "noNotifications": "لا توجد إشعارات",
+    "groupOverview": "نظرة عامة",
+    "groupSales": "المبيعات و CRM",
+    "groupCatalog": "الكتالوج",
+    "groupContent": "المحتوى",
+    "noResults": "لا نتائج",
+    "close": "إغلاق"
   },
   "range": {
     "today": "اليوم",

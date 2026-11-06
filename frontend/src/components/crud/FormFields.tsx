@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import type { FieldDef, Option } from './types'
 
-const input = 'mt-1 w-full rounded-lg border border-line bg-bg p-2 text-sm'
+const input = 'mt-1 w-full field p-2 text-sm'
 
 export function useOptions(def: { options?: Option[]; optionsFrom?: string }) {
   const q = useQuery({ queryKey: ['options', def.optionsFrom], queryFn: () => api.get<{ data: Option[] }>(def.optionsFrom!).then((r) => r.data), enabled: !!def.optionsFrom, staleTime: 60_000 })

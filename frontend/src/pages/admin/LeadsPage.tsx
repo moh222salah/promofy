@@ -74,7 +74,7 @@ function Board() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onMouseDown={() => setLost(null)}>
           <form role="dialog" aria-modal="true" aria-label={t('crm.lostTitle')} className="w-full max-w-sm space-y-3 rounded-xl border border-line bg-surface p-5 shadow-xl" onMouseDown={(e) => e.stopPropagation()} onSubmit={(e) => { e.preventDefault(); move.mutate({ id: lost.id, status: 'lost', lost_reason: lost.reason }) }}>
             <h2 className="font-bold">{t('crm.lostTitle')}</h2>
-            <input autoFocus aria-label={t('crm.lostReason')} placeholder={t('crm.lostReason')} className="w-full rounded-lg border border-line bg-bg p-2 text-sm" value={lost.reason} onChange={(e) => setLost({ ...lost, reason: e.target.value })} />
+            <input autoFocus aria-label={t('crm.lostReason')} placeholder={t('crm.lostReason')} className="w-full field p-2 text-sm" value={lost.reason} onChange={(e) => setLost({ ...lost, reason: e.target.value })} />
             <div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={() => setLost(null)}>{t('crud.cancel')}</Button><Button type="submit" disabled={move.isPending}>{t('crud.confirm')}</Button></div>
           </form>
         </div>)}

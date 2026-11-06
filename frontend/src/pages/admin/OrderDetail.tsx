@@ -18,7 +18,7 @@ const NEXT: Record<string, string[]> = {
 }
 
 const msg = (e: unknown, fb: string) => (e instanceof ApiError ? (Object.values(e.errors)[0]?.[0] ?? e.message) : fb)
-const input = 'rounded-lg border border-line bg-bg p-2 text-sm'
+const input = 'field p-2 text-sm'
 
 export default function OrderDetail() {
   const { id } = useParams()

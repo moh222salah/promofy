@@ -25,7 +25,7 @@ function FilterSelect({ def, value, onChange, lang }: { def: FilterDef; value: s
   const { t } = useTranslation()
   const opts = useOptions(def)
   return (
-    <select aria-label={def.label[lang]} className="rounded-lg border border-line bg-surface p-2 text-sm" value={value} onChange={(e) => onChange(e.target.value)}>
+    <select aria-label={def.label[lang]} className="field p-2 text-sm" value={value} onChange={(e) => onChange(e.target.value)}>
       <option value="">{def.label[lang]}: {t('crud.all')}</option>
       {opts.map((o) => <option key={o.value} value={o.value}>{lang === 'ar' ? o.label_ar : o.label_en}</option>)}
     </select>
@@ -135,13 +135,13 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="me-auto text-xl font-bold">{cfg.title[lang]}</h1>
-        {cfg.exportCsv && perm('export') && <a href={exportHref} className="inline-flex items-center gap-1 rounded-lg border border-line bg-surface px-3 py-2 text-sm hover:bg-surface-2"><Download size={16} aria-hidden />{t('crud.export')}</a>}
+        {cfg.exportCsv && perm('export') && <a href={exportHref} className="inline-flex items-center gap-1 btn btn-outline"><Download size={16} aria-hidden />{t('crud.export')}</a>}
         {perm('create') && <Button onClick={() => openEdit(null)}><Plus size={16} aria-hidden />{t('crud.create')}</Button>}
       </div>
 
       <Card>
         <div className="mb-3 flex flex-wrap items-center gap-2">
-          <input type="search" aria-label={t('crud.search')} placeholder={t('crud.search')} className="min-w-48 flex-1 rounded-lg border border-line bg-bg p-2 text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input type="search" aria-label={t('crud.search')} placeholder={t('crud.search')} className="min-w-48 flex-1 field p-2 text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
           {cfg.filters?.map((f) => <FilterSelect key={f.name} def={f} lang={lang} value={filters[f.name] ?? ''} onChange={(v) => { setFilters({ ...filters, [f.name]: v }); setPage(1) }} />)}
           {selected.size > 0 && bulkActions.length > 0 && (
             <div className="flex items-center gap-1 text-sm"><span className="text-muted">{selected.size} {t('crud.selected')}</span>
@@ -151,9 +151,9 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
 
         {list.isLoading ? <Spinner /> : list.isError ? <ErrorState error={list.error} onRetry={() => list.refetch()} /> : rows.length === 0 ? <EmptyState message={t('app.empty')} /> : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="dtable w-full text-sm">
               <thead>
-                <tr className="border-b border-line text-muted">
+                <tr className="border-b border-line text-xs uppercase tracking-wider text-muted">
                   {bulkActions.length > 0 && <th className="w-8 p-2"><input type="checkbox" aria-label="select all" checked={allSelected} onChange={() => setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.id)))} /></th>}
                   {cfg.columns.map((c) => (
                     <th key={c.key} className="p-2 text-start font-medium" aria-sort={sort === c.key ? 'ascending' : sort === `-${c.key}` ? 'descending' : undefined}>
@@ -164,20 +164,20 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
               </thead>
               <tbody>
                 {rows.map((r, idx) => (
-                  <tr key={r.id} className="border-b border-line last:border-0 hover:bg-surface-2/50">
+                  <tr key={r.id} style={{ ["--i" as any]: idx }} className="border-b border-line/60 last:border-0">
                     {bulkActions.length > 0 && <td className="p-2"><input type="checkbox" aria-label={`select ${r.id}`} checked={selected.has(r.id)} onChange={() => { const n = new Set(selected); n.has(r.id) ? n.delete(r.id) : n.add(r.id); setSelected(n) }} /></td>}
                     {cfg.columns.map((c, ci) => <td key={c.key} className="p-2">{ci === 0 && cfg.detailPath ? <Link className="font-medium text-brand-2 hover:underline" to={`${cfg.detailPath}/${r.id}`}>{c.render ? c.render(r, lang) : r[c.key]}</Link> : c.render ? c.render(r, lang) : c.badge ? <StatusBadge value={r[c.key]} /> : (typeof r[c.key] === 'boolean' ? (r[c.key] ? t('crud.yes') : t('crud.no')) : (r[c.key] ?? t('crud.none')))}</td>)}
                     <td className="p-2"><div className="flex justify-end gap-1">
                       {cfg.reorder && perm('edit') && <>
-                        <button className="rounded p-1.5 hover:bg-surface-2" aria-label={t('crud.reorder')} disabled={idx === 0 || move.isPending} onClick={() => moveRow(idx, -1)}><ArrowUp size={15} /></button>
-                        <button className="rounded p-1.5 hover:bg-surface-2" aria-label={t('crud.reorderDown')} disabled={idx === rows.length - 1 || move.isPending} onClick={() => moveRow(idx, 1)}><ArrowDown size={15} /></button></>}
+                        <button className="icon-btn" aria-label={t('crud.reorder')} disabled={idx === 0 || move.isPending} onClick={() => moveRow(idx, -1)}><ArrowUp size={15} /></button>
+                        <button className="icon-btn" aria-label={t('crud.reorderDown')} disabled={idx === rows.length - 1 || move.isPending} onClick={() => moveRow(idx, 1)}><ArrowDown size={15} /></button></>}
                       {cfg.workflow && perm(cfg.perms?.publish ?? 'publish') && (r.status === 'published'
-                        ? <button className="rounded p-1.5 hover:bg-surface-2" title={t('crud.unpublish')} aria-label={t('crud.unpublish')} onClick={() => act.mutate({ id: r.id, action: 'unpublish' })}><EyeOff size={15} /></button>
-                        : <button className="rounded p-1.5 hover:bg-surface-2" title={t('crud.publish')} aria-label={t('crud.publish')} onClick={() => act.mutate({ id: r.id, action: 'publish' })}><Eye size={15} /></button>)}
-                      {cfg.workflow && perm(cfg.perms?.publish ?? 'publish') && r.status !== 'archived' && <button className="rounded p-1.5 hover:bg-surface-2" title={t('crud.archive')} aria-label={t('crud.archive')} onClick={() => act.mutate({ id: r.id, action: 'archive' })}><Archive size={15} /></button>}
-                      {cfg.duplicate && perm('create') && <button className="rounded p-1.5 hover:bg-surface-2" title={t('crud.duplicate')} aria-label={t('crud.duplicate')} onClick={() => act.mutate({ id: r.id, action: 'duplicate' })}><Copy size={15} /></button>}
-                      {perm('edit') && <button className="rounded p-1.5 hover:bg-surface-2" title={t('crud.edit')} aria-label={t('crud.edit')} onClick={() => openEdit(r.id)}><Pencil size={15} /></button>}
-                      {perm('delete') && <button className="rounded p-1.5 text-danger hover:bg-surface-2" title={t('crud.delete')} aria-label={t('crud.delete')} onClick={() => setConfirm({ kind: 'delete', id: r.id })}><Trash2 size={15} /></button>}
+                        ? <button className="icon-btn" title={t('crud.unpublish')} aria-label={t('crud.unpublish')} onClick={() => act.mutate({ id: r.id, action: 'unpublish' })}><EyeOff size={15} /></button>
+                        : <button className="icon-btn" title={t('crud.publish')} aria-label={t('crud.publish')} onClick={() => act.mutate({ id: r.id, action: 'publish' })}><Eye size={15} /></button>)}
+                      {cfg.workflow && perm(cfg.perms?.publish ?? 'publish') && r.status !== 'archived' && <button className="icon-btn" title={t('crud.archive')} aria-label={t('crud.archive')} onClick={() => act.mutate({ id: r.id, action: 'archive' })}><Archive size={15} /></button>}
+                      {cfg.duplicate && perm('create') && <button className="icon-btn" title={t('crud.duplicate')} aria-label={t('crud.duplicate')} onClick={() => act.mutate({ id: r.id, action: 'duplicate' })}><Copy size={15} /></button>}
+                      {perm('edit') && <button className="icon-btn" title={t('crud.edit')} aria-label={t('crud.edit')} onClick={() => openEdit(r.id)}><Pencil size={15} /></button>}
+                      {perm('delete') && <button className="icon-btn danger text-danger" title={t('crud.delete')} aria-label={t('crud.delete')} onClick={() => setConfirm({ kind: 'delete', id: r.id })}><Trash2 size={15} /></button>}
                     </div></td>
                   </tr>))}
               </tbody>
@@ -201,7 +201,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
           <form role="dialog" aria-modal="true" aria-label={cfg.title[lang]} onSubmit={submit} onMouseDown={(e) => e.stopPropagation()} className="flex h-full w-full max-w-xl flex-col bg-surface shadow-2xl">
             <header className="flex items-center justify-between border-b border-line p-4">
               <h2 className="font-bold">{editing.id ? t('crud.edit') : t('crud.create')} — {cfg.title[lang]}</h2>
-              <button type="button" aria-label={t('crud.cancel')} className="rounded p-1 hover:bg-surface-2" onClick={() => setEditing(null)}><X size={18} /></button>
+              <button type="button" aria-label={t('crud.cancel')} className="icon-btn" onClick={() => setEditing(null)}><X size={18} /></button>
             </header>
             <div className="grid flex-1 content-start gap-4 overflow-y-auto p-4 md:grid-cols-2">
               {cfg.fields.filter((f) => f.showIf?.(editing.values) ?? true).map((f) => (

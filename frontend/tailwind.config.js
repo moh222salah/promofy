@@ -20,6 +20,8 @@ export default {
         danger: 'rgb(var(--c-danger) / <alpha-value>)',
         success: 'rgb(var(--c-success) / <alpha-value>)',
         warn: 'rgb(var(--c-warn) / <alpha-value>)',
+        lit: 'rgb(var(--c-lit) / <alpha-value>)',
+        rim: 'rgb(var(--c-rim) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['Inter', 'Manrope', 'system-ui', 'sans-serif'],

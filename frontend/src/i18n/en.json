@@ -36,7 +36,18 @@
     "orders": "Orders",
     "payments": "Payments & transactions",
     "customers": "Customers",
-    "leads": "Leads & CRM"
+    "leads": "Leads & CRM",
+    "menu": "Menu",
+    "search": "Search or jump to…",
+    "notifications": "Notifications",
+    "markAll": "Mark all read",
+    "noNotifications": "No notifications",
+    "groupOverview": "Overview",
+    "groupSales": "Sales & CRM",
+    "groupCatalog": "Catalog",
+    "groupContent": "Content",
+    "noResults": "No results",
+    "close": "Close"
   },
   "range": {
     "today": "Today",
