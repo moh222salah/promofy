@@ -3,7 +3,7 @@ import { NavLink, Navigate, Outlet, useLocation, useNavigate } from 'react-route
 import { useTranslation } from 'react-i18next'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, Contact, ShoppingCart, FileText, CreditCard, UserRound, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, Menu, Search, Bell, X, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Layers, Package, Tags, Images, Newspaper, FolderTree, Quote, Users, Contact, ShoppingCart, FileText, FolderKanban, CreditCard, UserRound, LogOut, Languages, Moon, Sun, PanelLeftClose, PanelLeftOpen, Menu, Search, Bell, X, type LucideIcon } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { applyLocale, fmtDate, type Locale } from '@/i18n'
 import { applyTheme, initialTheme, type Theme } from '@/lib/theme'
@@ -18,6 +18,7 @@ export const ADMIN_NAV: NavItem[] = [
   { to: '/admin/leads', label: 'nav.leads', icon: Contact, permission: 'leads.view|leads.view_assigned', group: 'groupSales' },
   { to: '/admin/orders', label: 'nav.orders', icon: ShoppingCart, permission: 'orders.view', group: 'groupSales' },
   { to: '/admin/quotations', label: 'nav.quotations', icon: FileText, permission: 'quotations.view|quotations.view_assigned', group: 'groupSales' },
+  { to: '/admin/projects', label: 'nav.projects', icon: FolderKanban, permission: 'projects.view|projects.view_assigned', group: 'groupSales' },
   { to: '/admin/payments', label: 'nav.payments', icon: CreditCard, permission: 'payments.view', group: 'groupSales' },
   { to: '/admin/customers', label: 'nav.customers', icon: UserRound, permission: 'customers.view', group: 'groupSales' },
   { to: '/admin/services', label: 'nav.services', icon: Briefcase, permission: 'services.view', group: 'groupCatalog' },

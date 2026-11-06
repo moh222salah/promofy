@@ -8,6 +8,7 @@ import * as commerce from '@/pages/admin/modules-commerce'
 import LeadsPage from '@/pages/admin/LeadsPage'
 import LeadDetail from '@/pages/admin/LeadDetail'
 import OrderDetail from '@/pages/admin/OrderDetail'
+import { ProjectsPage, ProjectCreate, ProjectDetail } from '@/pages/admin/Projects'
 import { QuotationsList, QuotationEditor, QuotationDetail } from '@/pages/admin/Quotations'
 import * as content from '@/pages/admin/modules-content'
 
@@ -33,6 +34,9 @@ export default function App() {
           <Route path="leads/:id" element={<LeadDetail />} />
           <Route path="orders" element={<ResourcePage cfg={commerce.orders} />} />
           <Route path="orders/:id" element={<OrderDetail />} />
+          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="projects/new" element={<ProjectCreate />} />
+          <Route path="projects/:id" element={<ProjectDetail />} />
           <Route path="quotations" element={<QuotationsList />} />
           <Route path="quotations/new" element={<QuotationEditor />} />
           <Route path="quotations/:id" element={<QuotationDetail />} />

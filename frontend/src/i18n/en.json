@@ -18,6 +18,7 @@
     "notStaff": "This account has no dashboard access."
   },
   "nav": {
+    "projects": "Projects",
     "quotations": "Quotations",
     "dashboard": "Dashboard Overview",
     "collapse": "Collapse",
