@@ -8,6 +8,7 @@ import * as commerce from '@/pages/admin/modules-commerce'
 import LeadsPage from '@/pages/admin/LeadsPage'
 import LeadDetail from '@/pages/admin/LeadDetail'
 import OrderDetail from '@/pages/admin/OrderDetail'
+import { QuotationsList, QuotationEditor, QuotationDetail } from '@/pages/admin/Quotations'
 import * as content from '@/pages/admin/modules-content'
 
 const Login = lazy(() => import('@/pages/admin/Login'))
@@ -32,6 +33,10 @@ export default function App() {
           <Route path="leads/:id" element={<LeadDetail />} />
           <Route path="orders" element={<ResourcePage cfg={commerce.orders} />} />
           <Route path="orders/:id" element={<OrderDetail />} />
+          <Route path="quotations" element={<QuotationsList />} />
+          <Route path="quotations/new" element={<QuotationEditor />} />
+          <Route path="quotations/:id" element={<QuotationDetail />} />
+          <Route path="quotations/:id/edit" element={<QuotationEditor />} />
           <Route path="payments" element={<ResourcePage cfg={commerce.payments} />} />
           <Route path="customers" element={<ResourcePage cfg={commerce.customers} />} />
           <Route path="team" element={<ResourcePage cfg={content.team} />} />
