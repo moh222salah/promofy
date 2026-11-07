@@ -10,7 +10,8 @@ setup() {
     (sudo apt-get update -qq && sudo apt-get install -y -qq libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev \
       && sudo docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && sudo docker-php-ext-install -j2 gd) >/dev/null 2>&1 || echo "warn: could not install ext-gd (image optimisation/PDF images limited)"
   fi
-  [ -d vendor ] || composer install --no-interaction --prefer-dist || composer install --no-interaction --prefer-dist --ignore-platform-req=ext-gd
+  # reinstall whenever the lock file changed since the last install (new dependencies after a git pull)
+  H=$(sha1sum composer.lock | cut -d' ' -f1); if [ ! -d vendor ] || [ "$(cat "$RUN/composer.hash" 2>/dev/null)" != "$H" ]; then composer install --no-interaction --prefer-dist || composer install --no-interaction --prefer-dist --ignore-platform-req=ext-gd; echo "$H" > "$RUN/composer.hash"; fi
   [ -f .env ] || cp .env.example .env
   grep -q '^APP_KEY=.\+' .env || php artisan key:generate --force
   mkdir -p database && touch database/database.sqlite
@@ -25,7 +26,7 @@ setup() {
   php artisan promofy:create-admin "$ADMIN_EMAIL" --password="$ADMIN_PASSWORD" >/dev/null 2>&1 || true
   # first run only: tagged demo records so every dashboard card/chart has something to show (remove: scripts/dev.sh demo-off)
   if [ "${SEED_DEMO:-1}" = 1 ] && [ ! -f "$RUN/demo-seeded" ]; then php artisan promofy:seed-demo >/dev/null 2>&1 && touch "$RUN/demo-seeded" || true; fi
-  cd "$F"; [ -d node_modules ] || npm ci --no-audit --no-fund
+  cd "$F"; H=$(sha1sum package-lock.json | cut -d' ' -f1); if [ ! -d node_modules ] || [ "$(cat "$RUN/npm.hash" 2>/dev/null)" != "$H" ]; then npm ci --no-audit --no-fund && echo "$H" > "$RUN/npm.hash"; fi
   echo "setup done — admin: $ADMIN_EMAIL / $ADMIN_PASSWORD (change it)"
 }
 
@@ -44,7 +45,7 @@ stop() {
 
 # Fast path for every Codespace resume: no reinstall when deps exist, just migrate + start (~10 s).
 up() {
-  if [ -d "$B/vendor" ] && [ -d "$F/node_modules" ] && [ -f "$B/.env" ]; then (cd "$B" && php artisan migrate --force >/dev/null 2>&1 || true); else setup; fi
+  if [ -d "$B/vendor" ] && [ -d "$F/node_modules" ] && [ -f "$B/.env" ] && [ "$(cat "$RUN/npm.hash" 2>/dev/null)" = "$(sha1sum "$F/package-lock.json" | cut -d' ' -f1)" ] && [ "$(cat "$RUN/composer.hash" 2>/dev/null)" = "$(sha1sum "$B/composer.lock" | cut -d' ' -f1)" ]; then (cd "$B" && php artisan migrate --force >/dev/null 2>&1 || true); else setup; fi
   start
 }
 
