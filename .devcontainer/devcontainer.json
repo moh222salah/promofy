@@ -4,7 +4,7 @@
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "22" }
   },
-  "postAttachCommand": "setsid nohup bash scripts/dev.sh all > /tmp/promofy-setup.log 2>&1 < /dev/null &",
+  "postAttachCommand": "setsid nohup bash scripts/dev.sh up > /tmp/promofy-setup.log 2>&1 < /dev/null &",
   "forwardPorts": [5173, 8000],
   "portsAttributes": {
     "5173": { "label": "Admin / Web (Vite)", "onAutoForward": "openBrowser", "visibility": "public" },

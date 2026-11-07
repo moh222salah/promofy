@@ -230,5 +230,6 @@
       "followup": "Follow-up",
       "status": "Status change"
     }
-  }
+  },
+  "export": {"empty": "Nothing to export", "print": "Print"}
 }

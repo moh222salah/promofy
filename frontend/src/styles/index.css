@@ -96,6 +96,12 @@ html[lang='ar'] .display { font-family: Alexandria, Manrope, sans-serif; letter-
   .badge3d.green { background: linear-gradient(145deg, #8cf2b8, #22c55e 55%, #14803c); box-shadow: 0 1px 0 rgb(255 255 255 / .45) inset, 0 -3px 6px rgb(0 0 0 / .22) inset, 0 10px 22px -8px rgb(34 197 94 / .75), 0 2px 4px rgb(0 0 0 / .25); }
   .lit:hover .badge3d { transform: translateY(-3px) rotate(-6deg) scale(1.08); }
 
+  /* KPI cards: every card owns a colour — glowing top edge, tinted wash, matching halo */
+  .kpi { --kc: 79 140 255; position: relative; overflow: hidden;
+    background-image: linear-gradient(180deg, rgb(var(--kc) / .16), rgb(var(--kc) / 0) 55%); }
+  .kpi::before { content: ''; position: absolute; inset-inline: 0; top: 0; height: 3px; z-index: 1; background: linear-gradient(90deg, transparent, rgb(var(--kc)) 25%, rgb(var(--kc) / .55) 75%, transparent); box-shadow: 0 0 18px 2px rgb(var(--kc) / .65); }
+  .kpi:hover { box-shadow: 0 18px 40px -18px rgb(var(--kc) / .7), var(--shadow-3d); border-color: rgb(var(--kc) / .55); }
+
   /* Buttons */
   .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: .75rem; padding: .55rem 1rem; font-size: .875rem; font-weight: 600; transition: transform .15s, box-shadow .25s, background .2s, opacity .2s; }
   .btn:active { transform: translateY(1px) scale(.985); }

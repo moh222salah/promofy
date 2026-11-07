@@ -1,6 +1,6 @@
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Funnel, FunnelChart, LabelList, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useId } from 'react'
-import { Download } from 'lucide-react'
+import { ExportButtons } from '@/components/ExportButtons'
 import { useTranslation } from 'react-i18next'
 import { Card, EmptyState } from '@/components/ui'
 import { fmtNumber } from '@/i18n'
@@ -55,7 +55,7 @@ export function ChartCard({ chart, title, exportHref, height = 260 }: { chart: C
   }
 
   return (
-    <Card className="transition-transform hover:-translate-y-0.5" title={title} actions={exportHref && <a href={exportHref} className="inline-flex items-center gap-1 text-xs text-muted hover:text-ink" aria-label={`${t('chart.export')}: ${title}`}><Download size={14} aria-hidden />CSV</a>}>
+    <Card className="transition-transform hover:-translate-y-0.5" title={title} actions={exportHref && <ExportButtons compact url={exportHref} name={title.replace(/\s+/g, '-').toLowerCase()} title={title} />}>
       <div dir="ltr" className="text-muted">{body()}</div>
     </Card>
   )

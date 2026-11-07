@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.10.0",
     "@tanstack/react-query": "^5.106.1",
     "clsx": "^2.1.1",
+    "fflate": "^0.8.3",
     "i18next": "^23.16.8",
     "lucide-react": "^1.69.0",
     "react": "^19.3.1",

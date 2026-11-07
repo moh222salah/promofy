@@ -3,7 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { ArrowDown, ArrowUp, Copy, Download, Pencil, Plus, Trash2, X, Eye, EyeOff, Archive } from 'lucide-react'
+import { ExportButtons } from '@/components/ExportButtons'
+import { ArrowDown, ArrowUp, Copy, Pencil, Plus, Trash2, X, Eye, EyeOff, Archive } from 'lucide-react'
 import { api, ApiError, qs } from '@/lib/api'
 import { useAuth } from '@/auth/AuthContext'
 import { Button, Card, EmptyState, ErrorState, Spinner } from '@/components/ui'
@@ -118,7 +119,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
     }
     save.mutate({ id: editing.id, values })
   }
-  const exportHref = `/api/v1${base}/export${qs({ search: term || undefined, sort })}`
+  const exportHref = `/api/v1${base}/export${qs({ search: term || undefined, sort, ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v).map(([k, v]) => [`filter[${k}]`, v])) })}`
 
   const rows = list.data?.data ?? []
   const meta = list.data?.meta
@@ -135,7 +136,7 @@ export default function ResourcePage({ cfg }: { cfg: ResourceConfig }) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="me-auto text-xl font-bold">{cfg.title[lang]}</h1>
-        {cfg.exportCsv && perm('export') && <a href={exportHref} className="inline-flex items-center gap-1 btn btn-outline"><Download size={16} aria-hidden />{t('crud.export')}</a>}
+        {cfg.exportCsv && perm('export') && <ExportButtons url={exportHref} name={cfg.path} title={cfg.title[lang]} />}
         {perm('create') && <Button onClick={() => openEdit(null)}><Plus size={16} aria-hidden />{t('crud.create')}</Button>}
       </div>
 

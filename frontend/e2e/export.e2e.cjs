@@ -1,0 +1,21 @@
+// Browser E2E: CSV / Excel / Print on a table page and on a chart card; the .xlsx is opened and verified.
+const { chromium } = require('playwright'); const { unzipSync, strFromU8 } = require('fflate'); const fs = require('fs')
+;(async () => {
+  const browser = await chromium.launch(); const ctx = await browser.newContext({ viewport: { width: 1500, height: 1000 }, acceptDownloads: true }); const page = await ctx.newPage()
+  const bad = []; page.on('pageerror', (e) => bad.push(e.message)); page.on('response', (x) => { if (x.url().includes('/api/v1/') && x.status() >= 400 && !x.url().endsWith('/auth/me')) bad.push(x.status() + ' ' + x.url().replace(/.*v1/, '')) })
+  const ok = (m) => console.log('✔', m)
+  await page.goto('http://localhost:5173/admin/login'); await page.fill('input[type=email]', 'admin@promofy.test'); await page.fill('input[type=password]', 'E2e-Pass-12345!'); await page.click('button[type=submit]'); await page.waitForURL('**/admin')
+  await page.goto('http://localhost:5173/admin/orders'); await page.waitForSelector('tbody tr')
+  ok('3 icons side by side on orders: ' + await page.locator('[data-export]').count())
+  const [csv] = await Promise.all([page.waitForEvent('download'), page.click('[data-export=csv]')]); const csvText = fs.readFileSync(await csv.path(), 'utf8'); ok(`csv ${csv.suggestedFilename()} rows=${csvText.trim().split('\n').length}`)
+  const [xl] = await Promise.all([page.waitForEvent('download'), page.click('[data-export=xlsx]')]); const files = unzipSync(new Uint8Array(fs.readFileSync(await xl.path())))
+  const sheet = strFromU8(files['xl/worksheets/sheet1.xml']); const rowsN = (sheet.match(/<row /g) || []).length
+  console.log(rowsN === csvText.trim().split('\n').length && sheet.includes('DEMO-O-') ? `✔ xlsx ${xl.suggestedFilename()} valid zip, ${rowsN} rows, same data as csv` : `FAIL xlsx rows=${rowsN}`)
+  await page.evaluate(() => { window.__printed = 0; const orig = HTMLIFrameElement.prototype; const d = Object.getOwnPropertyDescriptor(orig, 'contentWindow'); Object.defineProperty(orig, 'contentWindow', { get() { const w = d.get.call(this); if (w && !w.__p) { w.__p = 1; w.print = () => { window.__printed++ } } return w } }) })
+  await page.click('[data-export=print]'); await page.waitForFunction(() => window.__printed > 0, null, { timeout: 8000 }); ok('print dialog triggered with the rendered table')
+  await page.goto('http://localhost:5173/admin'); await page.waitForSelector('svg.recharts-surface', { timeout: 20000 }); ok('dashboard charts render with demo data: ' + await page.locator('svg.recharts-surface').count())
+  ok('chart cards export icons: ' + await page.locator('[data-export=xlsx]').count())
+  const [cx] = await Promise.all([page.waitForEvent('download'), page.locator('[data-export=xlsx]').first().click()]); ok('chart xlsx ' + cx.suggestedFilename())
+  await page.waitForTimeout(2500); await page.screenshot({ path: '/tmp/dash-demo.png', fullPage: false })
+  await browser.close(); console.log(bad.length ? 'ERRORS:\n' + bad.join('\n') : '✔ no failed requests / js errors')
+})().catch((e) => { console.log('FAIL', e.message); process.exit(1) })

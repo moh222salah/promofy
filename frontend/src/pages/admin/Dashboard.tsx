@@ -14,19 +14,19 @@ const MONEY = new Set(['total_revenue', 'average_order_value'])
 const KPI_ORDER = ['total_revenue', 'confirmed_payments', 'total_orders', 'pending_orders', 'new_leads', 'qualified_leads', 'conversion_rate', 'pending_quotations', 'active_projects', 'completed_projects', 'average_order_value', 'customer_growth']
 const CHART_ORDER = ['revenue_over_time', 'orders_over_time', 'leads_trend', 'lead_funnel', 'revenue_by_country', 'revenue_by_product_category', 'revenue_by_service_category', 'top_products', 'most_requested_services', 'traffic_sources', 'campaign_performance', 'customer_acquisition', 'payment_status_distribution', 'order_status_distribution']
 
-const KPI_STYLE: Record<string, { icon: LucideIcon; tone: string; spark?: [string, string] }> = {
-  total_revenue: { icon: Wallet, tone: 'amber', spark: ['revenue_over_time', '245 181 68'] },
-  confirmed_payments: { icon: BadgeCheck, tone: 'green' },
-  total_orders: { icon: ShoppingBag, tone: 'teal', spark: ['orders_over_time', '61 214 245'] },
-  pending_orders: { icon: Clock, tone: 'amber' },
-  new_leads: { icon: UserPlus, tone: 'violet', spark: ['leads_trend', '167 139 250'] },
-  qualified_leads: { icon: Target, tone: 'green' },
-  conversion_rate: { icon: Percent, tone: 'teal' },
-  pending_quotations: { icon: FileText, tone: 'rose' },
-  active_projects: { icon: Rocket, tone: 'violet' },
-  completed_projects: { icon: CheckCircle2, tone: 'green' },
-  average_order_value: { icon: Coins, tone: 'amber' },
-  customer_growth: { icon: TrendingUp, tone: 'teal', spark: ['customer_acquisition', '61 214 245'] },
+const KPI_STYLE: Record<string, { rgb?: string; icon: LucideIcon; tone: string; spark?: [string, string] }> = {
+  total_revenue: { rgb: '245 181 68', icon: Wallet, tone: 'amber', spark: ['revenue_over_time', '245 181 68'] },
+  confirmed_payments: { rgb: '34 197 94', icon: BadgeCheck, tone: 'green' },
+  total_orders: { rgb: '31 196 230', icon: ShoppingBag, tone: 'teal', spark: ['orders_over_time', '61 214 245'] },
+  pending_orders: { rgb: '251 146 60', icon: Clock, tone: 'amber' },
+  new_leads: { rgb: '139 92 246', icon: UserPlus, tone: 'violet', spark: ['leads_trend', '167 139 250'] },
+  qualified_leads: { rgb: '132 204 22', icon: Target, tone: 'green' },
+  conversion_rate: { rgb: '56 189 248', icon: Percent, tone: 'teal' },
+  pending_quotations: { rgb: '240 80 110', icon: FileText, tone: 'rose' },
+  active_projects: { rgb: '99 102 241', icon: Rocket, tone: 'violet' },
+  completed_projects: { rgb: '45 212 191', icon: CheckCircle2, tone: 'green' },
+  average_order_value: { rgb: '234 179 8', icon: Coins, tone: 'amber' },
+  customer_growth: { rgb: '217 70 239', icon: TrendingUp, tone: 'teal', spark: ['customer_acquisition', '61 214 245'] },
 }
 
 function KpiCard({ id, kpi, currency, charts, i }: { id: string; kpi: Kpi; currency: string; charts?: Record<string, any>; i: number }) {
@@ -38,13 +38,13 @@ function KpiCard({ id, kpi, currency, charts, i }: { id: string; kpi: Kpi; curre
   const fmt = (n: number) => isMoney ? fmtMoney(n, currency) : id === 'conversion_rate' ? `${fmtNumber(n)}%` : fmtNumber(n)
   const series: number[] = st.spark ? (charts?.[st.spark[0]]?.series ?? []).map((p: any) => Number(p.value)) : []
   return (
-    <section className="glass lit tilt3d page-in rounded-2xl p-4" style={{ animationDelay: `${i * 45}ms` }}>
+    <section className="kpi glass lit tilt3d page-in rounded-2xl p-4" style={{ animationDelay: `${i * 45}ms`, ['--kc' as any]: st.rgb ?? '79 140 255' }}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0"><div className="truncate text-xs font-medium text-muted">{t(`kpi.${id}`)}</div>
           <div className="display pop3d mt-1.5 truncate text-2xl font-bold tabular-nums"><CountUp value={Number(kpi.value)} format={fmt} /></div></div>
         <div className={`badge3d ${st.tone} pop3d shrink-0`}><Icon size={19} aria-hidden /></div>
       </div>
-      {st.spark && <div className="mt-2"><Sparkline data={series} color={st.spark[1]} /></div>}
+      {st.spark && <div className="mt-2"><Sparkline data={series} color={st.rgb ?? st.spark[1]} /></div>}
       <div className="mt-2 flex items-center gap-1 text-xs text-muted" title={t('kpi.vsPrev')}>
         {ch === null ? '—' : <>{ch >= 0 ? <ArrowUpRight size={14} className="text-success" aria-hidden /> : <ArrowDownRight size={14} className="text-danger" aria-hidden />}<span dir="ltr" className={ch >= 0 ? 'text-success' : 'text-danger'}>{ch > 0 ? '+' : ''}{fmtNumber(ch)}%</span></>}
       </div>

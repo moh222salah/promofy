@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-command PROMOFY dev runner.  Usage: scripts/dev.sh [setup|start|stop|status|all]   (default: all)
+# One-command PROMOFY dev runner.  Usage: scripts/dev.sh [up|setup|start|stop|status|demo|demo-off|all]  (up = fast resume)   (default: all)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; B="$ROOT/backend"; F="$ROOT/frontend"; RUN="$ROOT/.run"; mkdir -p "$RUN"
 ADMIN_EMAIL="${ADMIN_EMAIL:-admin@promofy.test}"; ADMIN_PASSWORD="${ADMIN_PASSWORD:-Promofy-Admin-2026!}"
@@ -23,6 +23,8 @@ setup() {
   fi
   php artisan migrate --force --seed
   php artisan promofy:create-admin "$ADMIN_EMAIL" --password="$ADMIN_PASSWORD" >/dev/null 2>&1 || true
+  # first run only: tagged demo records so every dashboard card/chart has something to show (remove: scripts/dev.sh demo-off)
+  if [ "${SEED_DEMO:-1}" = 1 ] && [ ! -f "$RUN/demo-seeded" ]; then php artisan promofy:seed-demo >/dev/null 2>&1 && touch "$RUN/demo-seeded" || true; fi
   cd "$F"; [ -d node_modules ] || npm ci --no-audit --no-fund
   echo "setup done — admin: $ADMIN_EMAIL / $ADMIN_PASSWORD (change it)"
 }
@@ -40,6 +42,12 @@ stop() {
   pkill -f "artisan serve" 2>/dev/null || true; pkill -f "vite --host" 2>/dev/null || true
 }
 
+# Fast path for every Codespace resume: no reinstall when deps exist, just migrate + start (~10 s).
+up() {
+  if [ -d "$B/vendor" ] && [ -d "$F/node_modules" ] && [ -f "$B/.env" ]; then (cd "$B" && php artisan migrate --force >/dev/null 2>&1 || true); else setup; fi
+  start
+}
+
 status() {
   printf 'API  :8000/up  -> %s\n' "$(curl -s -o /dev/null -w '%{http_code}' localhost:8000/up || true)"
   printf 'Admin:5173     -> %s\n' "$(curl -s -o /dev/null -w '%{http_code}' localhost:5173 || true)"
@@ -48,4 +56,4 @@ status() {
   true
 }
 
-case "${1:-all}" in setup) setup;; start) start;; stop) stop;; status) status;; all) setup; start;; *) echo "usage: $0 [setup|start|stop|status|all]"; exit 1;; esac
+case "${1:-all}" in up) up;; demo) (cd "$B" && php artisan promofy:seed-demo && touch "$RUN/demo-seeded");; demo-off) (cd "$B" && php artisan promofy:seed-demo --purge && rm -f "$RUN/demo-seeded");; setup) setup;; start) start;; stop) stop;; status) status;; all) setup; start;; *) echo "usage: $0 [up|setup|start|stop|status|demo|demo-off|all]"; exit 1;; esac
