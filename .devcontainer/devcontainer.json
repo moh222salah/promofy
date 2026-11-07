@@ -4,12 +4,11 @@
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "22" }
   },
-  "postCreateCommand": "bash scripts/dev.sh setup",
-  "postStartCommand": "bash scripts/dev.sh start",
+  "postAttachCommand": "setsid nohup bash scripts/dev.sh all > /tmp/promofy-setup.log 2>&1 < /dev/null &",
   "forwardPorts": [5173, 8000],
   "portsAttributes": {
-    "5173": { "label": "Admin / Web (Vite)", "onAutoForward": "openBrowser" },
-    "8000": { "label": "Laravel API", "onAutoForward": "notify" }
+    "5173": { "label": "Admin / Web (Vite)", "onAutoForward": "openBrowser", "visibility": "public" },
+    "8000": { "label": "Laravel API", "onAutoForward": "silent" }
   },
   "hostRequirements": { "cpus": 2 }
 }
