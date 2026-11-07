@@ -6,7 +6,11 @@ ADMIN_EMAIL="${ADMIN_EMAIL:-admin@promofy.test}"; ADMIN_PASSWORD="${ADMIN_PASSWO
 
 setup() {
   cd "$B"
-  [ -d vendor ] || composer install --no-interaction --prefer-dist
+  if ! php -m | grep -qix gd; then  # mpdf needs ext-gd; the Codespaces PHP image ships without it
+    (sudo apt-get update -qq && sudo apt-get install -y -qq libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev \
+      && sudo docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp && sudo docker-php-ext-install -j2 gd) >/dev/null 2>&1 || echo "warn: could not install ext-gd (image optimisation/PDF images limited)"
+  fi
+  [ -d vendor ] || composer install --no-interaction --prefer-dist || composer install --no-interaction --prefer-dist --ignore-platform-req=ext-gd
   [ -f .env ] || cp .env.example .env
   grep -q '^APP_KEY=.\+' .env || php artisan key:generate --force
   mkdir -p database && touch database/database.sqlite
